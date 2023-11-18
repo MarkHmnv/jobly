@@ -1,10 +1,23 @@
 from django.db import transaction
+from rest_framework.generics import get_object_or_404
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from candidate.models import Candidate
-from core.models import User
-from core.serializers import UserSerializer, UserDetailSerializer
+from core.models import User, Category, Skill
+from core.serializers import (
+    UserSerializer,
+    UserDetailSerializer,
+    SkillSerializer,
+    CategorySerializer
+)
+
+import re
+
+
+phone_pattern = r'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$'
+linkedin_pattern = r'https?://([a-z]+\.)?linkedin\.com/(in|pub)/[a-zA-Z0-9-]+(/[0-9A-Z]+)?'
+github_pattern = r'https?://github\.com/[a-zA-Z0-9-]+/?'
 
 
 class CandidateSerializer(serializers.ModelSerializer):
@@ -42,18 +55,51 @@ class CandidateSerializer(serializers.ModelSerializer):
 
 class CandidateDetailSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    skills = SkillSerializer(many=True)
+    category = CategorySerializer()
 
     class Meta:
         model = Candidate
-        fields = ['user', 'position', 'experience', 'country', 'city', 'about']
+        fields = ['user', 'position', 'category', 'skills',
+                  'experience', 'salary', 'country', 'city',
+                  'about', 'phone', 'linkedin', 'github']
 
+    def validate_phone(self, value):
+        if not re.match(phone_pattern, value):
+            raise serializers.ValidationError("phone number is invalid.")
+
+        return value
+
+    def validate_linkedin(self, value):
+        if not re.match(linkedin_pattern, value):
+            raise serializers.ValidationError("Linkedin profile URL is invalid.")
+        return value
+
+    def validate_github(self, value):
+        if not re.match(github_pattern, value):
+            raise serializers.ValidationError("Github profile URL is invalid.")
+        return value
+
+    # TODO: avoid error if user try to change email with the same email
     def update(self, instance, validated_data):
-        user_data = validated_data.pop('user')
+        user_data = validated_data.pop('user', None)
+        category_data = validated_data.pop('category', None)
+        skills_data = validated_data.pop('skills', [])
         user = instance.user
 
-        for attr, value in user_data.items():
-            setattr(user, attr, value)
-        user.save()
+        if user_data is not None:
+            for attr, value in user_data.items():
+                setattr(user, attr, value)
+            user.save()
+
+        if category_data is not None:
+            category = get_object_or_404(Category, name=category_data["name"])
+            instance.category = category
+
+        instance.skills.clear()
+        for skill_data in skills_data:
+            skill = get_object_or_404(Skill, name=skill_data["name"])
+            instance.skills.add(skill)
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
