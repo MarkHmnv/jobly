@@ -11,7 +11,7 @@ def _check_role(request, role):
         if 'role' in decoded_payload:
             return decoded_payload['role'] == role
 
-    except (InvalidToken, TokenError, TypeError, KeyError):
+    except (InvalidToken, TokenError, TypeError, KeyError, AttributeError):
         return False
 
     return False

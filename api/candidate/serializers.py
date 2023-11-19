@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.http import Http404
 from rest_framework.generics import get_object_or_404
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -31,6 +32,7 @@ class CandidateSerializer(serializers.ModelSerializer):
 
     def get_tokens(self, obj):
         refresh = RefreshToken.for_user(obj.user)
+        refresh['role'] = 'candidate'
         return {
             'refresh': str(refresh),
             'access': str(refresh.access_token),
@@ -66,21 +68,21 @@ class CandidateDetailSerializer(serializers.ModelSerializer):
 
     def validate_phone(self, value):
         if not re.match(phone_pattern, value):
-            raise serializers.ValidationError("phone number is invalid.")
+            raise serializers.ValidationError('phone number is invalid.')
 
         return value
 
     def validate_linkedin(self, value):
         if not re.match(linkedin_pattern, value):
-            raise serializers.ValidationError("Linkedin profile URL is invalid.")
+            raise serializers.ValidationError('Linkedin profile URL is invalid.')
         return value
 
     def validate_github(self, value):
         if not re.match(github_pattern, value):
-            raise serializers.ValidationError("Github profile URL is invalid.")
+            raise serializers.ValidationError('Github profile URL is invalid.')
         return value
 
-    # TODO: avoid error if user try to change email with the same email
+    # FIXME: If skill or category not found message says just 'Not found'
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', None)
         category_data = validated_data.pop('category', None)
@@ -93,12 +95,18 @@ class CandidateDetailSerializer(serializers.ModelSerializer):
             user.save()
 
         if category_data is not None:
-            category = get_object_or_404(Category, name=category_data["name"])
+            try:
+                category = get_object_or_404(Category, name=category_data['name'])
+            except Http404:
+                raise serializers.ValidationError({'detail': 'Category not found'})
             instance.category = category
 
         instance.skills.clear()
         for skill_data in skills_data:
-            skill = get_object_or_404(Skill, name=skill_data["name"])
+            try:
+                skill = get_object_or_404(Skill, name=skill_data['name'])
+            except Http404:
+                raise serializers.ValidationError({'detail': 'Skill not found'})
             instance.skills.add(skill)
 
         for attr, value in validated_data.items():
