@@ -28,4 +28,5 @@ urlpatterns = [
     path('api/token/', TokenWithRoleView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/candidates/', include('candidate.urls')),
+    path('api/recruiters/', include('recruiter.urls')),
 ]
