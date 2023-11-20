@@ -82,7 +82,6 @@ class CandidateDetailSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Github profile URL is invalid.')
         return value
 
-    # FIXME: If skill or category not found message says just 'Not found'
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', None)
         category_data = validated_data.pop('category', None)

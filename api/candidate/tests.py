@@ -14,6 +14,10 @@ TOKEN_URL = reverse('token_obtain_pair')
 ME_URL = reverse('candidates:me')
 
 
+def get_candidate_by_id(id):
+    return reverse('candidates:retrieve', args=[id])
+
+
 def create_candidate(email='test@example.com', password='password', **params):
     user = User.objects.create_user(
         email=email,
@@ -91,6 +95,10 @@ class PublicCandidateTests(TestCase):
         res = self.client.get(ME_URL)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
+    def test_retrieve_candidate_by_id_unauthorized(self):
+        res = self.client.get(get_candidate_by_id(1))
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
 
 class PrivateCandidateTests(TestCase):
     def setUp(self):
@@ -100,13 +108,8 @@ class PrivateCandidateTests(TestCase):
 
         refresh = RefreshToken.for_user(self.user)
         refresh['role'] = 'candidate'
-        self.access_token = str(refresh.access_token)
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.access_token)
-
-    def test_retrieve_candidate_success(self):
-        res = self.client.get(ME_URL)
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, {
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + str(refresh.access_token))
+        self.response = {
             'user': {
                 'first_name': self.user.first_name,
                 'last_name': self.user.last_name,
@@ -122,7 +125,17 @@ class PrivateCandidateTests(TestCase):
             'phone': self.candidate.phone,
             'linkedin': self.candidate.linkedin,
             'github': self.candidate.github,
-        })
+        }
+
+    def test_retrieve_candidate_success(self):
+        res = self.client.get(ME_URL)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, self.response)
+
+    def test_retrieve_candidate_by_id_success(self):
+        res = self.client.get(get_candidate_by_id(self.candidate.id))
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, self.response)
 
     def test_update_candidate_success(self):
         payload = {
