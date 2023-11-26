@@ -2,7 +2,7 @@ import {Bars3Icon, XMarkIcon} from "@heroicons/react/24/outline/index.js";
 import {Dialog} from "@headlessui/react";
 import {useState} from "react";
 import {Link} from "react-router-dom";
-import {CANDIDATES, HOME, PROFILE, RECOMMENDATIONS, SIGNIN, VACANCIES} from "../../util/routes.js";
+import {CANDIDATES, HOME, PROFILE, RECOMMENDATIONS, SIGNUP, VACANCIES} from "../../util/routes.js";
 import {useSelector} from "react-redux";
 
 const navigation = [
@@ -16,7 +16,7 @@ const Header = () => {
     const user = useSelector(state => state.auth.user);
 
     return (
-        <header className="absolute inset-x-0 top-0 z-50">
+        <header className="inset-x-0 top-0 z-50">
             <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
                 <div className="flex lg:flex-1">
                     <Link to={HOME} className="-m-1.5 p-1.5">
@@ -46,10 +46,23 @@ const Header = () => {
                     ))}
                 </div>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                    <Link
-                        to={user ? PROFILE : SIGNIN} className="text-sm font-semibold leading-6 text-gray-900">
-                        {user ? user.first_name + ' ' + user.last_name : 'Sign in <span aria-hidden="true">&rarr;</span>' }
-                    </Link>
+                    {
+                        user
+                            ? <Link to={PROFILE} className="text-sm font-semibold leading-6 text-gray-900">
+                                {user.first_name + ' ' + user.last_name}
+                            </Link>
+                            : (
+                                <>
+                                    <Link to={`${SIGNUP}?candidate=true`} className="text-sm font-semibold leading-6 text-gray-900">
+                                        Sign up as Candidate
+                                    </Link>
+                                    <span>&nbsp;|&nbsp;</span>
+                                    <Link to={SIGNUP} className="text-sm font-semibold leading-6 text-gray-900">
+                                        Sign up as Recruiter
+                                    </Link>
+                                </>
+                            )
+                    }
                 </div>
             </nav>
             <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
@@ -87,12 +100,23 @@ const Header = () => {
                                 ))}
                             </div>
                             <div className="py-6">
-                                <Link
-                                    to={user ? PROFILE : SIGNIN}
-                                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                                >
-                                    {user ? user.first_name + ' ' + user.last_name : 'Sign in'}
-                                </Link>
+                                {
+                                    user
+                                        ? <Link to={PROFILE} className="text-sm font-semibold leading-6 text-gray-900">
+                                            {user.first_name + ' ' + user.last_name}
+                                        </Link>
+                                        : (
+                                            <>
+                                                <Link to={`${SIGNUP}?candidate=true`} className="text-sm font-semibold leading-6 text-gray-900">
+                                                    Sign up as Candidate
+                                                </Link>
+                                                <span>&nbsp;|&nbsp;</span>
+                                                <Link to={SIGNUP} className="text-sm font-semibold leading-6 text-gray-900">
+                                                    Sign up as Recruiter
+                                                </Link>
+                                            </>
+                                        )
+                                }
                             </div>
                         </div>
                     </div>
