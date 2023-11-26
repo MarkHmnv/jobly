@@ -8,7 +8,8 @@ const getItemOrNull = (key) => {
 }
 
 const initialState = {
-    tokens: getItemOrNull("tokens"),
+    accessToken: getItemOrNull("accessToken"),
+    refreshToken: getItemOrNull("refreshToken"),
     user: getItemOrNull("user")
 }
 
