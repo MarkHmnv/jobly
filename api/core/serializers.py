@@ -10,7 +10,7 @@ from core.models import User, Skill, Category
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name']
+        fields = ['email', 'first_name', 'last_name']
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
@@ -29,6 +29,7 @@ class TokenWithRoleSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
 
         token['role'] = 'candidate' if user.is_candidate else 'recruiter'
+        token['name'] = f'{user.first_name} {user.last_name}'
 
         return token
 
