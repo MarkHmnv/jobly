@@ -13,7 +13,7 @@ const navigation = [
 
 const Header = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-    const user = useSelector(state => state.auth.user);
+    const username = useSelector(state => state.auth.username);
 
     return (
         <header className="inset-x-0 top-0 z-50">
@@ -47,9 +47,9 @@ const Header = () => {
                 </div>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
                     {
-                        user
+                        username
                             ? <Link to={PROFILE} className="text-sm font-semibold leading-6 text-gray-900">
-                                {user.first_name + ' ' + user.last_name}
+                                {username}
                             </Link>
                             : (
                                 <>
@@ -101,9 +101,9 @@ const Header = () => {
                             </div>
                             <div className="py-6">
                                 {
-                                    user
+                                    username
                                         ? <Link to={PROFILE} className="text-sm font-semibold leading-6 text-gray-900">
-                                            {user.first_name + ' ' + user.last_name}
+                                            {username}
                                         </Link>
                                         : (
                                             <>
