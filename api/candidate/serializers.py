@@ -67,18 +67,18 @@ class CandidateDetailSerializer(serializers.ModelSerializer):
                   'about', 'phone', 'linkedin', 'github']
 
     def validate_phone(self, value):
-        if not re.match(phone_pattern, value):
+        if value is not None and not re.match(phone_pattern, value):
             raise serializers.ValidationError('phone number is invalid.')
 
         return value
 
     def validate_linkedin(self, value):
-        if not re.match(linkedin_pattern, value):
+        if value is not None and not re.match(linkedin_pattern, value):
             raise serializers.ValidationError('Linkedin profile URL is invalid.')
         return value
 
     def validate_github(self, value):
-        if not re.match(github_pattern, value):
+        if value is not None and not re.match(github_pattern, value):
             raise serializers.ValidationError('Github profile URL is invalid.')
         return value
 

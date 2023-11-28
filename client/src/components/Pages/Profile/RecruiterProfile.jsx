@@ -1,49 +1,31 @@
-import {useGetCandidateProfileQuery, useUpdateCandidateProfileMutation} from "../../../redux/slices/userSlice.js";
-import {useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
+import {useEffect, useState} from "react";
+import {useGetRecruiterProfileQuery, useUpdateRecruiterProfileMutation} from "../../../redux/slices/userSlice.js";
 import {updateName} from "../../../redux/slices/authSlice.js";
-import Loader from "../../Loader/Loader.jsx";
 import Input from "./Input.jsx";
 import TextArea from "./TextArea.jsx";
+import Loader from "../../Loader/Loader.jsx";
 import CountrySelect from "./CountrySelect.jsx";
 
-
-const CandidateProfile = () => {
+const RecruiterProfile = () => {
     const dispatch = useDispatch()
     const [firstName, setFirstName] = useState("");
     const [email, setEmail] = useState("");
     const [lastName, setLastName] = useState("");
-    const [position, setPosition] = useState("");
-    const [category, setCategory] = useState("");
-    const [skills, setSkills] = useState("");
-    const [experience, setExperience] = useState(0);
-    const [salary, setSalary] = useState("");
     const [country, setCountry] = useState("");
     const [city, setCity] = useState("");
-    const [phone, setPhone] = useState("");
-    const [linkedin, setLinkedin] = useState("");
-    const [github, setGithub] = useState("");
     const [about, setAbout] = useState("");
 
-    const {data: profile, isLoading} = useGetCandidateProfileQuery();
-    const [updateCandidateProfile, {isLoading: isUpdating}] = useUpdateCandidateProfileMutation();
-
+    const {data: profile, isLoading} = useGetRecruiterProfileQuery();
+    const [updateRecruitereProfile, {isLoading: isUpdating}] = useUpdateRecruiterProfileMutation();
 
     useEffect(() => {
         if (profile) {
             setFirstName(profile.user.first_name);
             setEmail(profile.user.email);
             setLastName(profile.user.last_name);
-            setPosition(profile.position);
-            setCategory(profile.category.name);
-            setSkills(profile.skills.map(skill => skill.name).join(", "));
-            setExperience(profile.experience);
-            setSalary(profile.salary);
             setCountry(profile.country);
             setCity(profile.city);
-            setPhone(profile.phone);
-            setLinkedin(profile.linkedin);
-            setGithub(profile.github);
             setAbout(profile.about);
         }
     }, [profile, isLoading]);
@@ -51,26 +33,14 @@ const CandidateProfile = () => {
     const submitUpdate = async (e) => {
         e.preventDefault();
 
-        let skillsArray = skills.split(",").map(skill => ({name: skill.trim()}))
-
         try {
-            const res = await updateCandidateProfile({
+            const res = await updateRecruitereProfile({
                 "user": {
                     first_name: firstName,
                     last_name: lastName,
                 },
-                position,
-                "category": {
-                    "name": category
-                },
-                skills: skillsArray,
-                experience,
-                salary,
                 country,
                 city,
-                phone,
-                linkedin,
-                github,
                 about
             }).unwrap()
             dispatch(updateName(res.user.first_name + " " + res.user.last_name))
@@ -94,31 +64,15 @@ const CandidateProfile = () => {
                             <Input label="First name" value={firstName} setValue={setFirstName} type="text"/>
                             <Input label="Last name" value={lastName} setValue={setLastName} type="text"/>
 
-                            <Input label="Email address" value={email} setValue={setEmail} type="email"/>
-                            <Input label="Phone number" value={phone} setValue={setPhone} type="text"/>
+                            <Input label="Email address" value={email} setValue={setEmail} type="email"
+                                   colSpan={4}/>
 
                             <CountrySelect currentCountry={country} setCountry={setCountry}/>
                             <Input label="City" value={city} setValue={setCity} type="text"/>
                         </div>
                     </div>
                     <div className="border-b border-gray-900/10 pb-12">
-                        <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                            <Input label="Position" value={position} setValue={setPosition} type="text"/>
-                            <Input label="Category" value={category} setValue={setCategory} type="text"/>
-
-                            <Input label="Expirience" value={experience} setValue={setExperience} type="number"/>
-                            <Input label="Salary expectations" value={salary} setValue={setSalary} type="text"/>
-
-                            <Input label="LinkedIn" value={linkedin} setValue={setLinkedin} type="text"/>
-                            <Input label="GitHub" value={github} setValue={setGithub} type="text"/>
-                        </div>
-                    </div>
-
-                    <div className="border-b border-gray-900/10 pb-12">
                         <TextArea label="About" value={about} setValue={setAbout} name="about"/>
-                    </div>
-                    <div className="border-b border-gray-900/10 pb-12">
-                        <TextArea label="Skills" value={skills} setValue={setSkills} name="skills"/>
                     </div>
                 </div>
             </div>
@@ -136,4 +90,4 @@ const CandidateProfile = () => {
     );
 };
 
-export default CandidateProfile;
+export default RecruiterProfile;

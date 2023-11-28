@@ -4,8 +4,9 @@ import Error from "./components/Pages/Error/Error.jsx";
 import {HOME, PROFILE, SIGNIN, SIGNUP} from "./util/routes.js";
 import SignIn from "./components/Pages/Auth/SignIn.jsx";
 import SignUp from "./components/Pages/Auth/SignUp.jsx";
-import {PrivateRoutes} from "./privateRoutes.jsx";
+import {CPrivateRoutes, ProfileRoute, RPrivateRoutes} from "./privateRoutes.jsx";
 import CandidateProfile from "./components/Pages/Profile/CandidateProfile.jsx";
+import RecruiterProfile from "./components/Pages/Profile/RecruiterProfile.jsx";
 
 function App() {
 
@@ -14,9 +15,7 @@ function App() {
         <Route path={HOME} element={<Main/>}/>
         <Route path={SIGNIN} element={<SignIn/>}/>
         <Route path={SIGNUP} element={<SignUp />}/>
-        <Route element={<PrivateRoutes/>}>
-            <Route path={PROFILE} element={<CandidateProfile/>}/>
-        </Route>
+        <Route path={PROFILE} element={<ProfileRoute />}/>
         <Route path="*" element={<Error/>}/>
     </Routes>
   )
