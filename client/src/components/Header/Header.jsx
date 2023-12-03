@@ -1,7 +1,7 @@
 import {Bars3Icon, XMarkIcon} from "@heroicons/react/24/outline/index.js";
 import {Dialog} from "@headlessui/react";
 import {useState} from "react";
-import {Link} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 import {CANDIDATES, HOME, PROFILE, RECOMMENDATIONS, SIGNUP, VACANCIES} from "../../util/routes.js";
 import {useSelector} from "react-redux";
 
@@ -40,9 +40,9 @@ const Header = () => {
                 </div>
                 <div className="hidden lg:flex lg:gap-x-12">
                     {navigation.map((item) => (
-                        <Link key={item.name} to={item.href} className="text-sm font-semibold leading-6 text-gray-900">
+                        <NavLink key={item.name} to={item.href} className="text-sm font-semibold leading-6 text-gray-900">
                             {item.name}
-                        </Link>
+                        </NavLink>
                     ))}
                 </div>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">

@@ -22,6 +22,9 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                 method: "PATCH",
                 body: updateRequest
             })
+        }),
+        getAllCandidates: builder.query({
+            query: () => `${CANDIDATES_URL}list/`
         })
     })
 });
@@ -30,5 +33,6 @@ export const {
     useGetCandidateProfileQuery,
     useUpdateCandidateProfileMutation,
     useGetRecruiterProfileQuery,
-    useUpdateRecruiterProfileMutation
+    useUpdateRecruiterProfileMutation,
+    useGetAllCandidatesQuery
 } = usersApiSlice;
