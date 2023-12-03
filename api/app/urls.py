@@ -29,4 +29,5 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/candidates/', include('candidate.urls')),
     path('api/recruiters/', include('recruiter.urls')),
+    path('api/shared/', include('core.urls')),
 ]

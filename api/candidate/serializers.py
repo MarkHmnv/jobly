@@ -21,7 +21,7 @@ linkedin_pattern = r'https?://([a-z]+\.)?linkedin\.com/(in|pub)/[a-zA-Z0-9-]+(/[
 github_pattern = r'https?://github\.com/[a-zA-Z0-9-]+/?'
 
 
-class CandidateSerializer(serializers.ModelSerializer):
+class CandidateCreateSerializer(serializers.ModelSerializer):
     user = UserDetailSerializer()
     tokens = serializers.SerializerMethodField()
 
@@ -113,3 +113,13 @@ class CandidateDetailSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+
+class CandidateGeneralSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Candidate
+        fields = ['id', 'user', 'position',
+                  'salary', 'country', 'city']
+        read_only_fields = fields
