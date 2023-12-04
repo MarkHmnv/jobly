@@ -1,3 +1,5 @@
-from django.test import TestCase
+from core.models import Category
 
-# Create your tests here.
+
+def create_category(name='Test', **params):
+    return Category.objects.create(name=name, **params)

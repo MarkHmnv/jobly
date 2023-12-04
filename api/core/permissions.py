@@ -25,3 +25,9 @@ class IsCandidate(BasePermission):
 class IsRecruiter(BasePermission):
     def has_permission(self, request, view):
         return _check_role(request, 'recruiter')
+
+
+class IsRecruiterAndOwner(IsRecruiter):
+    def has_object_permission(self, request, view, obj):
+        return (super().has_permission(request, view)
+                and obj.recruiter == request.user.recruiter)
