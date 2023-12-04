@@ -15,6 +15,7 @@ from core.serializers import (
 
 import re
 
+from core.utils import update_category, update_skills
 
 phone_pattern = r'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$'
 linkedin_pattern = r'https?://([a-z]+\.)?linkedin\.com/(in|pub)/[a-zA-Z0-9-]+(/[0-9A-Z]+)?'
@@ -93,20 +94,8 @@ class CandidateDetailSerializer(serializers.ModelSerializer):
                 setattr(user, attr, value)
             user.save()
 
-        if category_data is not None:
-            try:
-                category = get_object_or_404(Category, name=category_data['name'])
-            except Http404:
-                raise serializers.ValidationError({'detail': 'Category not found'})
-            instance.category = category
-
-        instance.skills.clear()
-        for skill_data in skills_data:
-            try:
-                skill = get_object_or_404(Skill, name=skill_data['name'])
-            except Http404:
-                raise serializers.ValidationError({'detail': 'Skill not found'})
-            instance.skills.add(skill)
+        update_category(instance, category_data)
+        update_skills(instance, skills_data)
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)

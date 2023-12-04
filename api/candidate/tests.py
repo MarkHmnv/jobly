@@ -113,6 +113,7 @@ class PrivateCandidateTests(TestCase):
             'user': {
                 'first_name': self.user.first_name,
                 'last_name': self.user.last_name,
+                'email': self.user.email,
             },
             'position': self.candidate.position,
             'category': None,
