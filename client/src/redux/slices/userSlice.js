@@ -25,6 +25,9 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         }),
         getAllCandidates: builder.query({
             query: () => `${CANDIDATES_URL}list/`
+        }),
+        getCandidateById: builder.query({
+            query: (id) => `${CANDIDATES_URL}${id}/`
         })
     })
 });
@@ -34,5 +37,6 @@ export const {
     useUpdateCandidateProfileMutation,
     useGetRecruiterProfileQuery,
     useUpdateRecruiterProfileMutation,
-    useGetAllCandidatesQuery
+    useGetAllCandidatesQuery,
+    useGetCandidateByIdQuery
 } = usersApiSlice;
