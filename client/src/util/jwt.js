@@ -11,3 +11,7 @@ export const parseJwt = (token) => {
 
     return JSON.parse(jsonPayload);
 }
+
+export const isRecruiter = (token) => {
+    return token && parseJwt(token).role === 'recruiter'
+}
