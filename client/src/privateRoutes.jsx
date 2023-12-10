@@ -1,9 +1,9 @@
 import {useSelector} from "react-redux";
 import {Navigate, Outlet} from "react-router-dom";
 import {HOME, SIGNIN} from "./util/routes.js";
-import {parseJwt} from "./util/jwt.js";
-import CandidateOwnProfile from "./components/Pages/Profile/CandidateOwnProfile.jsx";
-import RecruiterOwnProfile from "./components/Pages/Profile/RecruiterOwnProfile.jsx";
+import {isRecruiter, parseJwt} from "./util/jwt.js";
+import UpdateCandidateProfile from "./components/Pages/User/UpdateCandidateProfile.jsx";
+import UpdateRecruiterProfile from "./components/Pages/User/UpdateRecruiterProfile.jsx";
 
 export const PrivateRoutes = () => {
     const token = useSelector(state => state.auth.accessToken)
@@ -23,7 +23,7 @@ export const RPrivateRoutes = () => {
     if(!token) {
         return <Navigate to={SIGNIN} />
     }
-    return parseJwt(token).role === "recruiter" ? <Outlet /> : <Navigate to={HOME} />
+    return isRecruiter(token) ? <Outlet /> : <Navigate to={HOME} />
 }
 
 export const ProfileRoute = () => {
@@ -34,9 +34,9 @@ export const ProfileRoute = () => {
 
     const role = parseJwt(token).role;
     if (role === "candidate") {
-        return <CandidateOwnProfile />;
+        return <UpdateCandidateProfile />;
     } else if (role === "recruiter") {
-        return <RecruiterOwnProfile />;
+        return <UpdateRecruiterProfile />;
     } else {
         return <Navigate to={HOME} />;
     }
