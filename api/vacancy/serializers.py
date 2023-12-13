@@ -1,7 +1,9 @@
+from rest_framework.generics import get_object_or_404
+
 from core.models import Skill, Category
 from core.serializers import CategorySerializer, SkillSerializer
 from core.utils import get_or_404, update_category, update_skills
-from vacancy.models import Vacancy
+from vacancy.models import Vacancy, VacancyApplication
 from rest_framework import serializers
 
 
@@ -55,3 +57,29 @@ class VacancyGeneralSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'description',
                   'experience', 'salary', 'country', 'city')
         read_only_fields = fields
+
+
+class VacancyApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VacancyApplication
+        fields = ('id', 'cover_letter', 'created_at')
+        read_only_fields = ('id', 'created_at')
+
+    def create(self, validated_data):
+        candidate = self.context['request'].user.candidate
+        vacancy_id = self.context['view'].kwargs.get('vacancy_id')
+        vacancy = get_object_or_404(Vacancy, id=vacancy_id)
+
+        return VacancyApplication.objects.create(
+            candidate=candidate,
+            vacancy=vacancy,
+            **validated_data
+        )
+
+
+class VacancyWithApplicationsSerializer(VacancyDetailSerializer):
+    applications = VacancyApplicationSerializer(many=True)
+
+    class Meta(VacancyDetailSerializer.Meta):
+        fields = VacancyDetailSerializer.Meta.fields + ('applications',)
+        read_only_fields = VacancyDetailSerializer.Meta.read_only_fields + ('applications',)
