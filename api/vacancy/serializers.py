@@ -1,5 +1,6 @@
 from rest_framework.generics import get_object_or_404
 
+from candidate.serializers import CandidateGeneralSerializer
 from core.models import Skill, Category
 from core.serializers import CategorySerializer, SkillSerializer
 from core.utils import get_or_404, update_category, update_skills
@@ -60,10 +61,12 @@ class VacancyGeneralSerializer(serializers.ModelSerializer):
 
 
 class VacancyApplicationSerializer(serializers.ModelSerializer):
+    candidate = CandidateGeneralSerializer()
+
     class Meta:
         model = VacancyApplication
-        fields = ('id', 'cover_letter', 'created_at')
-        read_only_fields = ('id', 'created_at')
+        fields = ('id', 'candidate', 'cover_letter', 'created_at')
+        read_only_fields = ('id', 'candidate', 'created_at')
 
     def create(self, validated_data):
         candidate = self.context['request'].user.candidate

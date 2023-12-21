@@ -8,6 +8,7 @@ const CandidateProfile = () => {
     const {data: profile, isLoading} = useGetCandidateByIdQuery(id)
 
     const [firstName, setFirstName] = useState("");
+    const [email, setEmail] = useState("");
     const [lastName, setLastName] = useState("");
     const [position, setPosition] = useState("");
     const [category, setCategory] = useState("");
@@ -24,10 +25,11 @@ const CandidateProfile = () => {
     useEffect(() => {
         if (profile) {
             setFirstName(profile.user.first_name);
+            setEmail(profile.user.email);
             setLastName(profile.user.last_name);
             setPosition(profile.position);
-            setCategory(profile.category.name);
-            setSkills(profile.skills.map(skill => skill.name).join(", "));
+            setCategory(profile.category?.name);
+            setSkills(profile.skills.map(skill => skill?.name).join(", "));
             setExperience(profile.experience);
             setSalary(profile.salary);
             setCountry(profile.country);
@@ -41,26 +43,79 @@ const CandidateProfile = () => {
 
     return (
         isLoading ? <Loader/> :
-            <div className="bg-gray-100">
-                <div className="max-w-lg mx-auto my-10 bg-white rounded-lg shadow-md p-5">
-                    <img className="w-32 h-32 rounded-full mx-auto" src="https://picsum.photos/200"
-                         alt="Profile picture"/>
-                    <h2 className="text-center text-2xl font-semibold mt-3">{firstName} {lastName}</h2>
-                    { position &&
-                        <p className="text-center text-gray-600 mt-1">{position}, {category}</p>
-                    }
-                    <p className="text-center text-gray-600 mt-1">{skills}</p>
-                    <p className="text-center text-gray-600 mt-1">{experience} years of experience</p>
-                    <p className="text-center text-gray-600 mt-1">Salary Expectations: ${salary}</p>
-                    <p className="text-center text-gray-600 mt-1">Location: {city}, {country} </p>
-                    <p className="text-center text-gray-600 mt-1">Phone: {phone}</p>
-                    <div className="flex justify-center mt-5">
-                        <a href={linkedin} className="text-blue-500 hover:text-blue-700 mx-3">LinkedIn</a>
-                        <a href={github} className="text-blue-500 hover:text-blue-700 mx-3">GitHub</a>
+            <div className="container mx-auto px-4 lg:px-6">
+                <div className="flex flex-col md:flex-row gap-6 my-6 p-4">
+                    <div className="md:w-1/3 flex justify-center">
+                        <img
+                            alt="Candidate"
+                            className="rounded-full h-48 w-48 border-4 border-blue-500"
+                            height="192"
+                            src="/placeholder.svg"
+                            style={{
+                                aspectRatio: "192/192",
+                                objectFit: "cover",
+                            }}
+                            width="192"
+                        />
                     </div>
-                    <div className="mt-5">
-                        <h3 className="text-xl font-semibold">About</h3>
-                        <p className="text-gray-600 mt-2">{about}</p>
+                    <div className="md:w-2/3">
+                        <div className="mb-4">
+                            <h2 className="text-2xl font-bold text-black-500">{firstName} {lastName}</h2>
+                        </div>
+                        <div>
+                            {email && <p className="text-sm text-gray-500">{email}</p>}
+                            {phone && <p className="text-sm text-gray-500">{phone}</p>}
+                            {position &&
+                                <p className="mt-4 text-gray-700">
+                                    <strong>Position:</strong> {position}
+                                </p>
+                            }
+                            {category &&
+                                <p className="text-gray-700">
+                                    <strong>Category:</strong> {category}
+                                </p>
+                            }
+                            {skills &&
+                                <p className="text-gray-700">
+                                    <strong>Skills:</strong> {skills}
+                                </p>
+                            }
+                            {experience &&
+                                <p className="text-gray-700">
+                                    <strong>Experience:</strong> {experience} years
+                                </p>
+                            }
+                            {salary &&
+                                <p className="text-gray-700">
+                                    <strong>Salary:</strong> ${salary}
+                                </p>
+                            }
+                            {country &&
+                                <p className="text-gray-700">
+                                    <strong>Country:</strong> {country}
+                                </p>
+                            }
+                            {city &&
+                                <p className="text-gray-700">
+                                    <strong>City:</strong> {city}
+                                </p>
+                            }
+                            {linkedin &&
+                                <p className="text-gray-700">
+                                    <strong>LinkedIn:</strong> {linkedin}
+                                </p>
+                            }
+                            {github &&
+                                <p className="text-gray-700">
+                                    <strong>Github:</strong> {github}
+                                </p>
+                            }
+                            {about &&
+                                <p className="text-gray-700">
+                                    <strong>About:</strong> {about}
+                                </p>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
