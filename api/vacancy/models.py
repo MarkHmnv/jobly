@@ -17,6 +17,10 @@ class Vacancy(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def applications(self):
+        return self.vacancyapplication_set
+
 
 class VacancyApplication(models.Model):
     candidate = models.ForeignKey('candidate.Candidate', on_delete=models.CASCADE, null=True)
