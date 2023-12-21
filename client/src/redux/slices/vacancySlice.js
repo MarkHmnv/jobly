@@ -22,6 +22,13 @@ export const vacancySlice = apiSlice.injectEndpoints({
                 method: "PATCH",
                 body: vacancy
             })
+        }),
+        applyForVacancy: builder.mutation({
+            query: ({coverLetter, id}) => ({
+                url: `${VACANCIES_URL}${id}/apply/`,
+                method: "POST",
+                body: coverLetter
+            })
         })
     })
 });
@@ -30,5 +37,6 @@ export const {
     useGetAllVacanciesQuery,
     useGetVacancyQuery,
     useCreateVacancyMutation,
-    useUpdateVacancyMutation
+    useUpdateVacancyMutation,
+    useApplyForVacancyMutation
 } = vacancySlice
