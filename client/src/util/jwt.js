@@ -15,3 +15,7 @@ export const parseJwt = (token) => {
 export const isRecruiter = (token) => {
     return token && parseJwt(token).role === 'recruiter'
 }
+
+export const isCandidate = (token) => {
+    return token && parseJwt(token).role === 'candidate'
+}
