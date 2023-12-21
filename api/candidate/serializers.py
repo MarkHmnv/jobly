@@ -63,9 +63,9 @@ class CandidateDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Candidate
-        fields = ['user', 'position', 'category', 'skills',
+        fields = ('user', 'position', 'category', 'skills',
                   'experience', 'salary', 'country', 'city',
-                  'about', 'phone', 'linkedin', 'github']
+                  'about', 'phone', 'linkedin', 'github')
 
     def validate_phone(self, value):
         if value is not None and not re.match(phone_pattern, value):
@@ -106,9 +106,10 @@ class CandidateDetailSerializer(serializers.ModelSerializer):
 
 class CandidateGeneralSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    skills = SkillSerializer(many=True)
 
     class Meta:
         model = Candidate
-        fields = ['id', 'user', 'position',
-                  'salary', 'country', 'city']
+        fields = ('id', 'user', 'position', 'category',
+                  'salary', 'country', 'city', 'skills')
         read_only_fields = fields
