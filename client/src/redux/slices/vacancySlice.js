@@ -29,6 +29,9 @@ export const vacancySlice = apiSlice.injectEndpoints({
                 method: "POST",
                 body: coverLetter
             })
+        }),
+        getVacancyApplications: builder.query({
+            query: (id) => `${VACANCIES_URL}${id}/applications/`
         })
     })
 });
@@ -38,5 +41,6 @@ export const {
     useGetVacancyQuery,
     useCreateVacancyMutation,
     useUpdateVacancyMutation,
-    useApplyForVacancyMutation
+    useApplyForVacancyMutation,
+    useGetVacancyApplicationsQuery
 } = vacancySlice
