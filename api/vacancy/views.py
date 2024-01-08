@@ -1,4 +1,6 @@
 from rest_framework import viewsets, generics
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -8,8 +10,8 @@ from vacancy.serializers import (
     VacancyDetailSerializer,
     VacancyGeneralSerializer,
     VacancyApplicationSerializer,
-    VacancyWithApplicationsSerializer
 )
+from vacancy.similarity import calculate_candidate_quality
 
 
 class VacancyView(viewsets.ModelViewSet):
@@ -20,12 +22,7 @@ class VacancyView(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return VacancyGeneralSerializer
-        elif (self.action == 'retrieve'):
-            obj = self.get_object()
-            if hasattr(self.request.user, 'recruiter') and obj.recruiter == self.request.user.recruiter:
-                return VacancyWithApplicationsSerializer
         return VacancyDetailSerializer
-
 
     def get_permissions(self):
         if self.action in ['create']:
@@ -49,3 +46,28 @@ class VacancyApplicationManageView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = VacancyApplicationSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsCandidateAndOwner]
+
+
+class VacancyApplicationList(generics.ListAPIView):
+    queryset = VacancyApplication.objects.all()
+    serializer_class = VacancyApplicationSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        vacancy_id = self.kwargs.get('vacancy_id', None)
+        if not vacancy_id:
+            return VacancyApplication.objects.none()
+
+        vacancy = get_object_or_404(Vacancy, id=vacancy_id)
+
+        if not hasattr(self.request.user, 'recruiter') or vacancy.recruiter != self.request.user.recruiter:
+            raise PermissionDenied('You do not have permission to view these applications.')
+
+        sorted_applications = sorted(
+            vacancy.applications.all(),
+            key=lambda application: calculate_candidate_quality(vacancy, application.candidate),
+            reverse=True
+        )
+
+        return sorted_applications
