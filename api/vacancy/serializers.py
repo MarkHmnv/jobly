@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from rest_framework.generics import get_object_or_404
 
 from candidate.serializers import CandidateGeneralSerializer
@@ -7,17 +8,24 @@ from core.utils import get_or_404, update_category, update_skills
 from vacancy.models import Vacancy, VacancyApplication
 from rest_framework import serializers
 
+from vacancy.similarity import calculate_candidate_quality
+
 
 class VacancyDetailSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     skills = SkillSerializer(many=True)
+    owner = serializers.SerializerMethodField()
 
     class Meta:
         model = Vacancy
         fields = ('id', 'title', 'description', 'category', 'skills',
-                  'experience', 'salary', 'country', 'city')
+                  'experience', 'salary', 'country', 'city', 'owner')
 
-        read_only_fields = ('id',)
+        read_only_fields = ('id', 'owner')
+
+    def get_owner(self, obj):
+        request = self.context['request'].user
+        return hasattr(request, 'recruiter') and obj.recruiter == request.recruiter
 
     def create(self, validated_data):
         category_data = validated_data.pop('category', None)
@@ -61,28 +69,30 @@ class VacancyGeneralSerializer(serializers.ModelSerializer):
 
 
 class VacancyApplicationSerializer(serializers.ModelSerializer):
-    candidate = CandidateGeneralSerializer()
+    candidate = CandidateGeneralSerializer(read_only=True)
+    quality = serializers.SerializerMethodField()
 
     class Meta:
         model = VacancyApplication
-        fields = ('id', 'candidate', 'cover_letter', 'created_at')
-        read_only_fields = ('id', 'candidate', 'created_at')
+        fields = ('id', 'cover_letter', 'created_at', 'candidate', 'quality')
+        read_only_fields = ('id', 'created_at', 'candidate', 'quality')
+
+    def get_quality(self, obj):
+        return calculate_candidate_quality(obj.vacancy, obj.candidate)
 
     def create(self, validated_data):
         candidate = self.context['request'].user.candidate
         vacancy_id = self.context['view'].kwargs.get('vacancy_id')
         vacancy = get_object_or_404(Vacancy, id=vacancy_id)
 
-        return VacancyApplication.objects.create(
-            candidate=candidate,
-            vacancy=vacancy,
-            **validated_data
-        )
+        if candidate.category is None or candidate.salary is None or candidate.experience is None:
+            raise serializers.ValidationError({'error': 'You must complete your profile to apply for a vacancy.'})
 
-
-class VacancyWithApplicationsSerializer(VacancyDetailSerializer):
-    applications = VacancyApplicationSerializer(many=True)
-
-    class Meta(VacancyDetailSerializer.Meta):
-        fields = VacancyDetailSerializer.Meta.fields + ('applications',)
-        read_only_fields = VacancyDetailSerializer.Meta.read_only_fields + ('applications',)
+        try:
+            return VacancyApplication.objects.create(
+                candidate=candidate,
+                vacancy=vacancy,
+                **validated_data
+            )
+        except IntegrityError:
+            raise serializers.ValidationError({'error': 'You have already applied to this vacancy.'})
