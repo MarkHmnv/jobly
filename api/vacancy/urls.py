@@ -10,6 +10,7 @@ router.register('', views.VacancyView)
 urlpatterns = [
     path('', include(router.urls)),
     path('<int:vacancy_id>/apply/', views.VacancyApplicationCreateView.as_view(), name='apply-vacancy'),
+    path('<int:vacancy_id>/applications/', views.VacancyApplicationList.as_view(), name='application-list'),
     path(
         '<int:vacancy_id>/applications/<int:id>/',
         views.VacancyApplicationManageView.as_view(),
