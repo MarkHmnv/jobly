@@ -17,11 +17,14 @@ VACANCIES_URL = reverse('vacancies:vacancy-list')
 def get_vacancy_by_id(id):
     return reverse('vacancies:vacancy-detail', args=[id])
 
+
 def apply_for_vacancy_by_id(vacancy_id):
     return reverse('vacancies:apply-vacancy', args=[vacancy_id])
 
+
 def get_vacancy_application_by_id(vacancy_id, application_id):
     return reverse('vacancies:application-detail', args=[vacancy_id, application_id])
+
 
 def create_vacancy(recruiter, **params):
     if 'category' in params:
@@ -35,12 +38,14 @@ def create_vacancy(recruiter, **params):
 
     return vacancy
 
+
 def create_vacancy_application(vacancy, candidate):
     return VacancyApplication.objects.create(
-        vacancy=vacancy, 
-        candidate=candidate, 
+        vacancy=vacancy,
+        candidate=candidate,
         cover_letter='Test cover letter'
-        )
+    )
+
 
 def authorize_another_user(client, role='recruiter'):
     if role == 'recruiter':
@@ -53,8 +58,7 @@ def authorize_another_user(client, role='recruiter'):
         refresh = RefreshToken.for_user(another_candidate.user)
         refresh['role'] = 'candidate'
         client.credentials(HTTP_AUTHORIZATION='Bearer ' + str(refresh.access_token))
-    return client 
-
+    return client
 
 
 class VacancyRecruiterTest(TestCase):
@@ -197,7 +201,7 @@ class VacancyCandidateTest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertEqual(res.data['cover_letter'], self.application_payload['cover_letter'])
         self.assertEqual(VacancyApplication.objects.count(), 1)
-    
+
     def test_retrieve_vacancy_application_success(self):
         application = create_vacancy_application(self.vacancy, self.candidate)
         res = self.client.get(get_vacancy_application_by_id(self.vacancy.id, application.id))
@@ -213,9 +217,9 @@ class VacancyCandidateTest(TestCase):
         application = create_vacancy_application(self.vacancy, self.candidate)
         self.application_payload['cover_letter'] = 'Updated cover letter'
         res = self.client.patch(
-            get_vacancy_application_by_id(self.vacancy.id, application.id), 
+            get_vacancy_application_by_id(self.vacancy.id, application.id),
             self.application_payload
-            )
+        )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         for k, v in self.application_payload.items():
             self.assertEqual(res.data[k], v)
@@ -226,9 +230,9 @@ class VacancyCandidateTest(TestCase):
         self.client = authorize_another_user(self.client, role='candidate')
 
         res = self.client.patch(
-            get_vacancy_application_by_id(self.vacancy.id, application.id), 
+            get_vacancy_application_by_id(self.vacancy.id, application.id),
             self.application_payload
-            )
+        )
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_destroy_vacancy_application_success(self):

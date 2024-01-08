@@ -11,6 +11,7 @@ import CreateVacancy from "./components/Pages/Vacancy/CreateVacancy.jsx";
 import UpdateVacancy from "./components/Pages/Vacancy/UpdateVacancy.jsx";
 import Vacancy from "./components/Pages/Vacancy/Vacancy.jsx";
 import CandidateProfile from "./components/Pages/User/CandidateProfile.jsx";
+import VacancyApplications from "./components/Pages/Vacancy/VacancyApplications.jsx";
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
         <Route element={<RPrivateRoutes />}>
             <Route path={CREATE_VACANCY} element={<CreateVacancy/>}/>
             <Route path={`${VACANCIES}/:id/edit`} element={<UpdateVacancy/>}/>
+            <Route path={`${VACANCIES}/:id/applications`} element={<VacancyApplications/>}/>
         </Route>
         <Route path="*" element={<Error/>}/>
     </Routes>
