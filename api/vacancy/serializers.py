@@ -11,17 +11,23 @@ from rest_framework import serializers
 from vacancy.similarity import calculate_candidate_quality
 
 
-class VacancyDetailSerializer(serializers.ModelSerializer):
-    category = CategorySerializer()
+class VacancyGeneralSerializer(serializers.ModelSerializer):
     skills = SkillSerializer(many=True)
-    owner = serializers.SerializerMethodField()
 
     class Meta:
         model = Vacancy
-        fields = ('id', 'title', 'description', 'category', 'skills',
-                  'experience', 'salary', 'country', 'city', 'owner')
+        fields = ('id', 'title', 'description', 'experience',
+                  'salary', 'country', 'city', 'created_at', 'skills')
+        read_only_fields = fields
 
-        read_only_fields = ('id', 'owner')
+
+class VacancyDetailSerializer(VacancyGeneralSerializer):
+    category = CategorySerializer()
+    owner = serializers.SerializerMethodField()
+
+    class Meta(VacancyGeneralSerializer.Meta):
+        fields = VacancyGeneralSerializer.Meta.fields + ('category', 'owner')
+        read_only_fields = VacancyGeneralSerializer.Meta.read_only_fields + ('owner',)
 
     def get_owner(self, obj):
         request = self.context['request'].user
@@ -58,14 +64,6 @@ class VacancyDetailSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
-
-
-class VacancyGeneralSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Vacancy
-        fields = ('id', 'title', 'description',
-                  'experience', 'salary', 'country', 'city')
-        read_only_fields = fields
 
 
 class VacancyApplicationSerializer(serializers.ModelSerializer):

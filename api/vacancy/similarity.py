@@ -2,7 +2,6 @@ from collections import Counter
 import numpy as np
 from numpy.linalg import norm
 
-
 SKILL_WEIGHT = 0.4
 SALARY_WEIGHT = 0.2
 EXPERIENCE_WEIGHT = 0.2

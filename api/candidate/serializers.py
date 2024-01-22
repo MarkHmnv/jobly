@@ -1,11 +1,9 @@
 from django.db import transaction
-from django.http import Http404
-from rest_framework.generics import get_object_or_404
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from candidate.models import Candidate
-from core.models import User, Category, Skill
+from core.models import User
 from core.serializers import (
     UserSerializer,
     UserDetailSerializer,
@@ -110,6 +108,6 @@ class CandidateGeneralSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Candidate
-        fields = ('id', 'user', 'position', 'category',
+        fields = ('id', 'user', 'position', 'experience',
                   'salary', 'country', 'city', 'skills')
         read_only_fields = fields
