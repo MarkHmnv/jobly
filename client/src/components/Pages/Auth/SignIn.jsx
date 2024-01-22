@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import {resetCredentials, useSignInMutation} from "../../../redux/slices/authSlice.js";
 import Loader from "../../Loader/Loader.jsx";
 import Input from "./Input.jsx";
+import {toastError} from "../../../util/toastUtil.jsx";
 
 const SignIn = () => {
     const dispatch = useDispatch();
@@ -18,7 +19,7 @@ const SignIn = () => {
     const redirect = searchParams.get("redirect") || HOME;
 
     useEffect(() => {
-        if(token) {
+        if (token) {
             navigate(redirect);
         }
     }, [token, redirect, navigate]);
@@ -30,7 +31,7 @@ const SignIn = () => {
             dispatch(resetCredentials(res));
             navigate(redirect);
         } catch (error) {
-            console.log(error);
+            toastError(error)
         }
     }
 
@@ -44,9 +45,9 @@ const SignIn = () => {
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form className="space-y-6" onSubmit={handleSignIn}>
-                    <Input label="Email" value={email} setValue={setEmail} type="email" name="email" />
+                    <Input label="Email" value={email} setValue={setEmail} type="email" name="email"/>
 
-                    <Input label="Password" value={password} setValue={setPassword} type="password" name="password" />
+                    <Input label="Password" value={password} setValue={setPassword} type="password" name="password"/>
 
                     <div>
                         <button
@@ -58,7 +59,7 @@ const SignIn = () => {
                     </div>
                 </form>
 
-                {isLoading && <Loader />}
+                {isLoading && <Loader/>}
 
                 <p className="mt-10 text-center text-sm text-gray-500">
                     Not a member?{' '}

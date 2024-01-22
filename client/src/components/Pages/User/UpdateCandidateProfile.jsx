@@ -122,7 +122,7 @@ const UpdateCandidateProfile = () => {
                         <TextArea label="About" value={about} setValue={setAbout}/>
                     </div>
                     <div className="border-b border-gray-900/10 pb-12">
-                        <TextArea label="Skills" value={skills} setValue={setSkills} />
+                        <TextArea label="Skills" value={skills} setValue={setSkills}/>
                     </div>
                 </div>
             </div>

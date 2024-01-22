@@ -18,6 +18,7 @@ import {Menu, Transition} from '@headlessui/react'
 import {ChevronDownIcon} from '@heroicons/react/20/solid'
 import {removeCredentials} from "../../redux/slices/authSlice.js";
 import {isRecruiter} from "../../util/jwt.js";
+import {classNames} from "../../util/util.js";
 
 const navigation = [
     {name: 'Recommendations', href: RECOMMENDATIONS},
@@ -32,16 +33,12 @@ const Header = () => {
     const token = useSelector(state => state.auth.accessToken);
     const isUserRecruiter = isRecruiter(token);
 
-    const classNames = (...classes) => {
-        return classes.filter(Boolean).join(' ')
-    }
-
     const logout = () => {
         dispatch(removeCredentials());
     }
 
     return (
-        <header className="inset-x-0 top-0 z-50 pb-5">
+        <header className="inset-x-0 top-0 z-50 pb-10">
             <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
                 <div className="flex lg:flex-1">
                     <Link to={HOME} className="-m-1.5 p-1.5">

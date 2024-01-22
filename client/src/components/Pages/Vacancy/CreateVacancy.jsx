@@ -6,7 +6,7 @@ import TextArea from "../../TextArea/TextArea.jsx";
 import Loader from "../../Loader/Loader.jsx";
 import {useState} from "react";
 import {VACANCIES} from "../../../util/routes.js";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {toastError} from "../../../util/toastUtil.jsx";
 import {toast} from "react-toastify";
 

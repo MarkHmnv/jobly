@@ -5,9 +5,9 @@ const CategorySelect = ({value, setValue}) => {
     const {data: categories, isLoading} = useGetCategoriesQuery();
 
     return (
-        isLoading ? <Loader /> :
+        isLoading ? <Loader/> :
             <div className="sm:col-span-3">
-                <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">
+                <label className="block text-sm font-medium leading-6 text-gray-900">
                     Category
                 </label>
                 <div className="mt-2">

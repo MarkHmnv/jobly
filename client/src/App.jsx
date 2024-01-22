@@ -14,27 +14,26 @@ import CandidateProfile from "./components/Pages/User/CandidateProfile.jsx";
 import VacancyApplications from "./components/Pages/Vacancy/VacancyApplications.jsx";
 
 function App() {
-
-  return (
-    <Routes>
-        <Route path={HOME} element={<Main/>}/>
-        <Route path={SIGNIN} element={<SignIn/>}/>
-        <Route path={SIGNUP} element={<SignUp />}/>
-        <Route path={PROFILE} element={<ProfileRoute />}/>
-        <Route element={<PrivateRoutes />}>
-            <Route path={CANDIDATES} element={<CandidateList/>}/>
-            <Route path={`${CANDIDATES}/:id`} element={<CandidateProfile/>}/>
-            <Route path={VACANCIES} element={<VacancyList/>}/>
-            <Route path={`${VACANCIES}/:id`} element={<Vacancy/>}/>
-        </Route>
-        <Route element={<RPrivateRoutes />}>
-            <Route path={CREATE_VACANCY} element={<CreateVacancy/>}/>
-            <Route path={`${VACANCIES}/:id/edit`} element={<UpdateVacancy/>}/>
-            <Route path={`${VACANCIES}/:id/applications`} element={<VacancyApplications/>}/>
-        </Route>
-        <Route path="*" element={<Error/>}/>
-    </Routes>
-  )
+    return (
+        <Routes>
+            <Route path={HOME} element={<Main/>}/>
+            <Route path={SIGNIN} element={<SignIn/>}/>
+            <Route path={SIGNUP} element={<SignUp/>}/>
+            <Route path={PROFILE} element={<ProfileRoute/>}/>
+            <Route element={<PrivateRoutes/>}>
+                <Route path={CANDIDATES} element={<CandidateList/>}/>
+                <Route path={`${CANDIDATES}/:id`} element={<CandidateProfile/>}/>
+                <Route path={VACANCIES} element={<VacancyList/>}/>
+                <Route path={`${VACANCIES}/:id`} element={<Vacancy/>}/>
+            </Route>
+            <Route element={<RPrivateRoutes/>}>
+                <Route path={CREATE_VACANCY} element={<CreateVacancy/>}/>
+                <Route path={`${VACANCIES}/:id/edit`} element={<UpdateVacancy/>}/>
+                <Route path={`${VACANCIES}/:id/applications`} element={<VacancyApplications/>}/>
+            </Route>
+            <Route path="*" element={<Error/>}/>
+        </Routes>
+    )
 }
 
 export default App

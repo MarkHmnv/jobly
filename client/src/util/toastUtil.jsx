@@ -1,8 +1,8 @@
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 
 export const toastError = (error) => {
     let messages = [];
-    if (typeof(error.data) === 'object') {
+    if (typeof (error.data) === 'object') {
         for (const value of Object.values(error.data)) {
             if (value instanceof Array) {
                 for (const message of value) {
