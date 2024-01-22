@@ -10,9 +10,13 @@ class Vacancy(models.Model):
     salary = models.IntegerField(null=True)
     country = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     candidates = models.ManyToManyField('candidate.Candidate', blank=True)
     recruiter = models.ForeignKey('recruiter.Recruiter', on_delete=models.CASCADE, null=True)
+
+    class Meta:
+        ordering = ['-created_at']
 
     def __str__(self):
         return self.title
