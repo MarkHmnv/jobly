@@ -4,8 +4,28 @@ import {VACANCIES_URL} from "../../util/constants.js";
 export const vacancySlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getAllVacancies: builder.query({
-            query: () => VACANCIES_URL
+            query: ({skills, category, salary}) => {
+                let queryParameters = '';
+
+                if (skills) {
+                    queryParameters += `skills__name__in=${skills}&`;
+                }
+
+                if (category) {
+                    queryParameters += `category__name=${category}&`;
+                }
+
+                if (salary) {
+                    queryParameters += `salary=${salary}&`;
+                }
+
+                // Remove trailing '&' if there are parameters
+                queryParameters = queryParameters.slice(0, -1);
+
+                return `${VACANCIES_URL}?${queryParameters}`;
+            }
         }),
+
         getVacancy: builder.query({
             query: (id) => `${VACANCIES_URL}${id}/`
         }),
@@ -31,7 +51,8 @@ export const vacancySlice = apiSlice.injectEndpoints({
             })
         }),
         getVacancyApplications: builder.query({
-            query: (id) => `${VACANCIES_URL}${id}/applications/`
+            query: ({id, sort_by, reverse}) =>
+                `${VACANCIES_URL}${id}/applications?sort_by=${sort_by}&reverse=${reverse}`
         })
     })
 });
