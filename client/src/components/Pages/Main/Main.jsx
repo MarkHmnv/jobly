@@ -12,7 +12,8 @@ const Main = () => {
                             Navigate Your IT Career with Jobly
                         </h1>
                         <p className="mt-6 text-lg leading-8 text-gray-600">
-                            Unlock a world of opportunities with Jobly, the premier IT job board. Grow your skills, and shape the future of technology.
+                            Unlock a world of opportunities with Jobly, the premier IT job board. Grow your skills, and
+                            shape the future of technology.
                         </p>
                         <div className="mt-10 flex items-center justify-center gap-x-6">
                             <a

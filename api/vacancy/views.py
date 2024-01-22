@@ -1,4 +1,5 @@
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, serializers, filters
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -18,6 +19,16 @@ class VacancyView(viewsets.ModelViewSet):
     queryset = Vacancy.objects.all()
     lookup_field = 'id'
     authentication_classes = [JWTAuthentication]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+
+    filterset_fields = {
+        'skills__name': ['exact', 'in'],
+        'category__name': ['exact', 'in'],
+        'salary': ['exact', 'gte', 'lte'],
+    }
+
+    search_fields = ['title', 'description', 'country', 'city']
+    ordering_fields = ['created_at', 'salary']
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -64,10 +75,18 @@ class VacancyApplicationList(generics.ListAPIView):
         if not hasattr(self.request.user, 'recruiter') or vacancy.recruiter != self.request.user.recruiter:
             raise PermissionDenied('You do not have permission to view these applications.')
 
-        sorted_applications = sorted(
-            vacancy.applications.all(),
-            key=lambda application: calculate_candidate_quality(vacancy, application.candidate),
-            reverse=True
-        )
+        sort_by = self.request.query_params.get('sort_by', 'quality')
+        reverse = self.request.query_params.get('reverse', 'true').lower() == 'true'
+
+        if sort_by == 'quality':
+            sorted_applications = sorted(
+                vacancy.applications.all(),
+                key=lambda application: calculate_candidate_quality(vacancy, application.candidate),
+                reverse=reverse
+            )
+        elif sort_by == 'created_at':
+            sorted_applications = vacancy.applications.order_by('-created_at' if reverse else 'created_at')
+        else:
+            raise serializers.ValidationError({'error': 'Invalid sort_by parameter.'})
 
         return sorted_applications

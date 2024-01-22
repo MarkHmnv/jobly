@@ -7,37 +7,37 @@ import UpdateRecruiterProfile from "./components/Pages/User/UpdateRecruiterProfi
 
 export const PrivateRoutes = () => {
     const token = useSelector(state => state.auth.accessToken)
-    return token ? <Outlet /> : <Navigate to={SIGNIN} />
+    return token ? <Outlet/> : <Navigate to={SIGNIN}/>
 }
 
 export const CPrivateRoutes = () => {
     const token = useSelector(state => state.auth.accessToken)
-    if(!token) {
-        return <Navigate to={SIGNIN} />
+    if (!token) {
+        return <Navigate to={SIGNIN}/>
     }
-    return isCandidate(token) ? <Outlet /> : <Navigate to={HOME} />
+    return isCandidate(token) ? <Outlet/> : <Navigate to={HOME}/>
 }
 
 export const RPrivateRoutes = () => {
     const token = useSelector(state => state.auth.accessToken)
-    if(!token) {
-        return <Navigate to={SIGNIN} />
+    if (!token) {
+        return <Navigate to={SIGNIN}/>
     }
-    return isRecruiter(token) ? <Outlet /> : <Navigate to={HOME} />
+    return isRecruiter(token) ? <Outlet/> : <Navigate to={HOME}/>
 }
 
 export const ProfileRoute = () => {
     const token = useSelector(state => state.auth.accessToken);
     if (!token) {
-        return <Navigate to={SIGNIN} />;
+        return <Navigate to={SIGNIN}/>;
     }
 
     const role = parseJwt(token).role;
     if (role === "candidate") {
-        return <UpdateCandidateProfile />;
+        return <UpdateCandidateProfile/>;
     } else if (role === "recruiter") {
-        return <UpdateRecruiterProfile />;
+        return <UpdateRecruiterProfile/>;
     } else {
-        return <Navigate to={HOME} />;
+        return <Navigate to={HOME}/>;
     }
 }

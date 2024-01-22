@@ -1,4 +1,3 @@
-
 const Input = ({label, value, setValue, type, colSpan}) => {
     return (
         <div className={colSpan ? `sm:col-span-${colSpan}` : "sm:col-span-3"}>

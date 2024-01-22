@@ -108,13 +108,17 @@ const Vacancy = () => {
                             </div>
                         </div>
                     }
+                    {owner &&
+                        <div className="p-4">
+                            <Link
+                                className="inline-block px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+                                to={`${VACANCIES}/${id}/applications`}
+                            >
+                                View Applications
+                            </Link>
+                        </div>
+                    }
                 </div>
-                {
-                    owner &&
-                    <Link to={`${VACANCIES}/${id}/applications`} className={"pt-5 text-blue-500"}>
-                        View Applications
-                    </Link>
-                }
             </main>
     );
 };

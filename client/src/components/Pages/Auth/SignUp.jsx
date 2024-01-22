@@ -9,6 +9,7 @@ import {
     useRegisterRecruiterMutation
 } from "../../../redux/slices/authSlice.js";
 import Input from "./Input.jsx";
+import {toastError} from "../../../util/toastUtil.jsx";
 
 const SignUp = () => {
     const [firstName, setFirstName] = useState("");
@@ -18,16 +19,16 @@ const SignUp = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { search } = useLocation();
+    const {search} = useLocation();
     const isCandidate = new URLSearchParams(search).get('candidate');
-    const [registerCandidate, { isLoadingCandidate }] = useRegisterCandidateMutation()
-    const [registerRecruiter, { isLoadingRecruiter }] = useRegisterRecruiterMutation()
+    const [registerCandidate, {isLoadingCandidate}] = useRegisterCandidateMutation()
+    const [registerRecruiter, {isLoadingRecruiter}] = useRegisterRecruiterMutation()
     const token = useSelector(state => state.auth.accessToken);
     const searchParams = new URLSearchParams(search);
     const redirect = searchParams.get("redirect") || PROFILE;
 
     useEffect(() => {
-        if(token) {
+        if (token) {
             navigate(redirect);
         }
     }, [token, redirect, navigate]);
@@ -37,7 +38,7 @@ const SignUp = () => {
         try {
             const performRegistration = isCandidate ? registerCandidate : registerRecruiter;
             const data = {
-                "user" : {
+                "user": {
                     first_name: firstName,
                     last_name: lastName,
                     email,
@@ -48,7 +49,7 @@ const SignUp = () => {
             dispatch(setCredentials(res));
             navigate(redirect);
         } catch (error) {
-            console.log(error);
+            toastError(error)
         }
     }
 
@@ -62,13 +63,13 @@ const SignUp = () => {
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form className="space-y-6" onSubmit={handleSignUp}>
-                    <Input label="First name" value={firstName} setValue={setFirstName} type="text" name="firstName" />
+                    <Input label="First name" value={firstName} setValue={setFirstName} type="text" name="firstName"/>
 
-                    <Input label="Last name" value={lastName} setValue={setLastName} type="text" name="lastName" />
+                    <Input label="Last name" value={lastName} setValue={setLastName} type="text" name="lastName"/>
 
-                    <Input label="Email" value={email} setValue={setEmail} type="email" name="email" />
+                    <Input label="Email" value={email} setValue={setEmail} type="email" name="email"/>
 
-                    <Input label="Password" value={password} setValue={setPassword} type="password" name="password" />
+                    <Input label="Password" value={password} setValue={setPassword} type="password" name="password"/>
 
                     <div>
                         <button
@@ -80,7 +81,7 @@ const SignUp = () => {
                     </div>
                 </form>
 
-                {(isLoadingCandidate || isLoadingRecruiter) && <Loader />}
+                {(isLoadingCandidate || isLoadingRecruiter) && <Loader/>}
 
                 <p className="mt-10 text-center text-sm text-gray-500">
                     Already have an account?{' '}
