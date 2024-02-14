@@ -26,12 +26,12 @@ def get_vacancy_application_by_id(vacancy_id, application_id):
     return reverse('vacancies:application-detail', args=[vacancy_id, application_id])
 
 
-def create_vacancy(recruiter, **params):
+def create_vacancy(recruiter, salary=100, experience=1, **params):
     if 'category' in params:
         params['category'] = Category.objects.get(name=params['category']['name'])
 
     skills = params.pop('skills', [])
-    vacancy = Vacancy.objects.create(recruiter=recruiter, **params)
+    vacancy = Vacancy.objects.create(recruiter=recruiter, salary=salary, experience=experience, **params)
     for skill_data in skills:
         skill = get_or_404(Skill, skill_data, 'Skill not found')
         vacancy.skills.add(skill)
@@ -45,6 +45,10 @@ def create_vacancy_application(vacancy, candidate):
         candidate=candidate,
         cover_letter='Test cover letter'
     )
+
+
+def create_skill(name='Test'):
+    return Skill.objects.create(name=name)
 
 
 def authorize_another_user(client, role='recruiter'):
@@ -63,7 +67,7 @@ def authorize_another_user(client, role='recruiter'):
 
 class VacancyRecruiterTest(TestCase):
     def setUp(self):
-        create_category()
+        create_category(name='Test Category')
         self.recruiter = create_recruiter()
         self.client = APIClient()
         refresh = RefreshToken.for_user(self.recruiter.user)
@@ -74,7 +78,7 @@ class VacancyRecruiterTest(TestCase):
             'title': 'Test',
             'description': 'Test',
             'category': {
-                'name': 'Test',
+                'name': 'Test Category',
             },
             'skills': [],
             'experience': 1,
@@ -146,14 +150,20 @@ class VacancyRecruiterTest(TestCase):
 
 class VacancyCandidateTest(TestCase):
     def setUp(self):
+        category = create_category(name='Test Category')
+        skill = create_skill(name='Test Skill')
         self.payload = {
             'id': 1,
             'title': 'Test',
             'description': 'Test',
             'category': {
-                'name': 'Test',
+                'name': 'Test Category',
             },
-            'skills': [],
+            'skills': [
+                {
+                    'name': 'Test Skill',
+                }
+            ],
             'experience': 1,
             'salary': 100,
             'country': 'Test',
@@ -162,10 +172,9 @@ class VacancyCandidateTest(TestCase):
         self.application_payload = {
             'cover_letter': 'Test cover letter',
         }
-        create_category()
         recruiter = create_recruiter()
         self.vacancy = create_vacancy(recruiter=recruiter, **self.payload)
-        self.candidate = create_candidate(email='test1@test.com')
+        self.candidate = create_candidate(email='test1@test.com', skill=skill, category=category)
         self.client = APIClient()
         refresh = RefreshToken.for_user(self.candidate.user)
         refresh['role'] = 'candidate'
