@@ -1,3 +1,7 @@
+from django.core.cache import cache
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+
 from rest_framework import viewsets, generics, serializers, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import PermissionDenied
@@ -6,13 +10,18 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from core.permissions import IsRecruiter, IsRecruiterAndOwner, IsCandidate, IsCandidateAndOwner
+from core.utils import check_profile_complete
 from vacancy.models import Vacancy, VacancyApplication
 from vacancy.serializers import (
     VacancyDetailSerializer,
     VacancyGeneralSerializer,
     VacancyApplicationSerializer,
 )
-from vacancy.similarity import calculate_candidate_quality
+from vacancy.similarity import calculate_quality
+
+
+QUALITY_THRESHOLD = 0.5
+CACHE_KEY_PREFIX = 'recommendation_list'
 
 
 class VacancyView(viewsets.ModelViewSet):
@@ -81,7 +90,7 @@ class VacancyApplicationList(generics.ListAPIView):
         if sort_by == 'quality':
             sorted_applications = sorted(
                 vacancy.applications.all(),
-                key=lambda application: calculate_candidate_quality(vacancy, application.candidate),
+                key=lambda application: calculate_quality(vacancy, application.candidate),
                 reverse=reverse
             )
         elif sort_by == 'created_at':
@@ -90,3 +99,50 @@ class VacancyApplicationList(generics.ListAPIView):
             raise serializers.ValidationError({'error': 'Invalid sort_by parameter.'})
 
         return sorted_applications
+
+
+class RecommendationList(generics.ListAPIView):
+    serializer_class = VacancyGeneralSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    # recommendations will be updated every 15 minutes
+    @method_decorator(cache_page(60 * 15, key_prefix=CACHE_KEY_PREFIX))
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        candidate = self.request.user.candidate
+
+        check_profile_complete(candidate, 'You must complete your profile to get recommended vacancies.')
+
+        cached_result = cache.get(self.get_cache_key())
+        if cached_result is not None:
+            return cached_result
+
+        all_vacancies = Vacancy.objects.all()
+
+        vacancies_quality = {
+            vacancy: calculate_quality(vacancy, candidate)
+            for vacancy in all_vacancies
+        }
+
+        filtered_vacancies = [
+            vacancy
+            for vacancy, quality in vacancies_quality.items()
+            if quality >= QUALITY_THRESHOLD
+        ]
+
+        sorted_vacancies = sorted(
+            filtered_vacancies,
+            key=lambda vacancy: vacancies_quality[vacancy],
+            reverse=True
+        )
+
+        cache.set(self.get_cache_key(), sorted_vacancies)
+
+        return sorted_vacancies
+
+    def get_cache_key(self):
+        user_id = self.request.user.id
+        return f'{CACHE_KEY_PREFIX}_{user_id}'

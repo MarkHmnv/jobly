@@ -1,5 +1,5 @@
 import {apiSlice} from "./apiSlice.js";
-import {VACANCIES_URL} from "../../util/constants.js";
+import {RECOMMENDATIONS_URL, VACANCIES_URL} from "../../util/constants.js";
 
 export const vacancySlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -53,6 +53,9 @@ export const vacancySlice = apiSlice.injectEndpoints({
         getVacancyApplications: builder.query({
             query: ({id, sort_by, reverse}) =>
                 `${VACANCIES_URL}${id}/applications?sort_by=${sort_by}&reverse=${reverse}`
+        }),
+        getRecommendations: builder.query({
+            query: () => RECOMMENDATIONS_URL
         })
     })
 });
@@ -63,5 +66,6 @@ export const {
     useCreateVacancyMutation,
     useUpdateVacancyMutation,
     useApplyForVacancyMutation,
-    useGetVacancyApplicationsQuery
+    useGetVacancyApplicationsQuery,
+    useGetRecommendationsQuery
 } = vacancySlice
