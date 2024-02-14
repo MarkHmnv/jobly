@@ -4,11 +4,11 @@ from rest_framework.generics import get_object_or_404
 from candidate.serializers import CandidateGeneralSerializer
 from core.models import Skill, Category
 from core.serializers import CategorySerializer, SkillSerializer
-from core.utils import get_or_404, update_category, update_skills
+from core.utils import get_or_404, update_category, update_skills, check_profile_complete
 from vacancy.models import Vacancy, VacancyApplication
 from rest_framework import serializers
 
-from vacancy.similarity import calculate_candidate_quality
+from vacancy.similarity import calculate_quality
 
 
 class VacancyGeneralSerializer(serializers.ModelSerializer):
@@ -27,7 +27,7 @@ class VacancyDetailSerializer(VacancyGeneralSerializer):
 
     class Meta(VacancyGeneralSerializer.Meta):
         fields = VacancyGeneralSerializer.Meta.fields + ('category', 'owner')
-        read_only_fields = VacancyGeneralSerializer.Meta.read_only_fields + ('owner',)
+        read_only_fields = ('owner',)
 
     def get_owner(self, obj):
         request = self.context['request'].user
@@ -76,15 +76,14 @@ class VacancyApplicationSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'created_at', 'candidate', 'quality')
 
     def get_quality(self, obj):
-        return calculate_candidate_quality(obj.vacancy, obj.candidate)
+        return calculate_quality(obj.vacancy, obj.candidate)
 
     def create(self, validated_data):
         candidate = self.context['request'].user.candidate
         vacancy_id = self.context['view'].kwargs.get('vacancy_id')
         vacancy = get_object_or_404(Vacancy, id=vacancy_id)
 
-        if candidate.category is None or candidate.salary is None or candidate.experience is None:
-            raise serializers.ValidationError({'error': 'You must complete your profile to apply for a vacancy.'})
+        check_profile_complete(candidate, 'You must complete your profile to apply for a vacancy.')
 
         try:
             return VacancyApplication.objects.create(

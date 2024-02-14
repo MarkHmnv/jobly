@@ -24,3 +24,8 @@ def update_skills(instance, skills_data):
         skill = get_or_404(Skill, skill_data, 'Skill not found')
         instance.skills.add(skill)
 
+
+def check_profile_complete(candidate, message='You must complete your profile.'):
+    if (candidate.category is None or candidate.salary is None
+            or candidate.experience is None or candidate.skills.count() == 0):
+        raise serializers.ValidationError({'error': message})
