@@ -18,16 +18,22 @@ def get_candidate_by_id(id):
     return reverse('candidates:retrieve', args=[id])
 
 
-def create_candidate(email='test@example.com', password='password', **params):
+def create_candidate(email='test@example.com', password='password',
+                     salary=100, experience=1, skill=None, category=None):
     user = User.objects.create_user(
         email=email,
         password=password,
         is_candidate=True
     )
-    return Candidate.objects.create(
+    candidate = Candidate.objects.create(
         user=user,
-        **params
+        salary=salary,
+        experience=experience,
+        category=category
     )
+    if skill:
+        candidate.skills.set([skill])
+    return candidate
 
 
 class PublicCandidateTests(TestCase):
