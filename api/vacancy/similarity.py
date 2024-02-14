@@ -13,10 +13,11 @@ def vectorize(keywords, bow):
 
 
 def cosine_similarity(v1, v2):
-    return np.dot(v1, v2) / (norm(v1) * norm(v2))
+    norm_product = norm(v1) * norm(v2)
+    return np.dot(v1, v2) / norm_product if norm_product != 0 else 0
 
 
-def calculate_candidate_quality(vacancy, candidate):
+def calculate_quality(vacancy, candidate):
     vacancy_skills = vacancy.skills.values_list('name', flat=True)
     candidate_skills = candidate.skills.values_list('name', flat=True)
 
@@ -29,7 +30,10 @@ def calculate_candidate_quality(vacancy, candidate):
     v2 = vectorize(all_skills, vacancy_bow)
 
     skill_match = cosine_similarity(v1, v2)
-    salary_match = 1 - abs(vacancy.salary - candidate.salary) / max(vacancy.salary, candidate.salary)
+    if vacancy.salary is not None:
+        salary_match = 1 - abs(vacancy.salary - candidate.salary) / max(vacancy.salary, candidate.salary)
+    else:
+        salary_match = 1
     category_match = 1 if vacancy.category == candidate.category else 0
     experience_match = min(candidate.experience / vacancy.experience, 1)
 
