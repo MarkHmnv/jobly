@@ -1,11 +1,11 @@
 import {useEffect, useState} from "react";
 import {useGetVacancyQuery, useUpdateVacancyMutation} from "../../../redux/slices/vacancySlice.js";
 import {useParams} from "react-router-dom";
-import Input from "../../Input/Input.jsx";
-import CountrySelect from "../../Select/CountrySelect.jsx";
-import CategorySelect from "../../Select/CategorySelect.jsx";
-import TextArea from "../../TextArea/TextArea.jsx";
-import Loader from "../../Loader/Loader.jsx";
+import Input from "../../shared/Input/Input.jsx";
+import CountrySelect from "../../shared/Select/CountrySelect.jsx";
+import CategorySelect from "../../shared/Select/CategorySelect.jsx";
+import TextArea from "../../shared/TextArea/TextArea.jsx";
+import Loader from "../../shared/Loader/Loader.jsx";
 import {toastError} from "../../../util/toastUtil.jsx";
 import {toast} from "react-toastify";
 

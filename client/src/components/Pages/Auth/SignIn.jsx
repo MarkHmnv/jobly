@@ -3,7 +3,7 @@ import {HOME, SIGNUP} from "../../../util/routes.js";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {resetCredentials, useSignInMutation} from "../../../redux/slices/authSlice.js";
-import Loader from "../../Loader/Loader.jsx";
+import Loader from "../../shared/Loader/Loader.jsx";
 import Input from "./Input.jsx";
 import {toastError} from "../../../util/toastUtil.jsx";
 

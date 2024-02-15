@@ -2,10 +2,10 @@ import {useDispatch} from "react-redux";
 import {useEffect, useState} from "react";
 import {useGetRecruiterProfileQuery, useUpdateRecruiterProfileMutation} from "../../../redux/slices/userSlice.js";
 import {updateName} from "../../../redux/slices/authSlice.js";
-import Input from "../../Input/Input.jsx";
-import TextArea from "../../TextArea/TextArea.jsx";
-import Loader from "../../Loader/Loader.jsx";
-import CountrySelect from "../../Select/CountrySelect.jsx";
+import Input from "../../shared/Input/Input.jsx";
+import TextArea from "../../shared/TextArea/TextArea.jsx";
+import Loader from "../../shared/Loader/Loader.jsx";
+import CountrySelect from "../../shared/Select/CountrySelect.jsx";
 import {toastError} from "../../../util/toastUtil.jsx";
 import {toast} from "react-toastify";
 

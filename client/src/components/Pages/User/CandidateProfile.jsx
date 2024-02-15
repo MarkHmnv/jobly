@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import Loader from "../../Loader/Loader.jsx";
+import Loader from "../../shared/Loader/Loader.jsx";
 import {useParams} from "react-router-dom";
 import {useGetCandidateByIdQuery} from "../../../redux/slices/userSlice.js";
 

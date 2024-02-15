@@ -1,4 +1,4 @@
-import {COUNTRIES_URL} from "../../util/constants.js";
+import {COUNTRIES_URL} from "../../../util/constants.js";
 import {useEffect, useState} from "react";
 
 const retrieveCountries = async () => {

@@ -1,4 +1,4 @@
-import Loader from "../../Loader/Loader.jsx";
+import Loader from "../../shared/Loader/Loader.jsx";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {PROFILE, SIGNIN} from "../../../util/routes.js";
 import {useDispatch, useSelector} from "react-redux";

@@ -11,14 +11,14 @@ import {
     SIGNIN,
     SIGNUP,
     VACANCIES
-} from "../../util/routes.js";
+} from "../../../util/routes.js";
 import {useDispatch, useSelector} from "react-redux";
 import {Fragment} from 'react'
 import {Menu, Transition} from '@headlessui/react'
 import {ChevronDownIcon} from '@heroicons/react/20/solid'
-import {removeCredentials} from "../../redux/slices/authSlice.js";
-import {isRecruiter} from "../../util/jwt.js";
-import {classNames} from "../../util/util.js";
+import {removeCredentials} from "../../../redux/slices/authSlice.js";
+import {isRecruiter} from "../../../util/jwt.js";
+import {classNames} from "../../../util/util.js";
 
 const navigation = [
     {name: 'Recommendations', href: RECOMMENDATIONS},
