@@ -1,7 +1,8 @@
 import {useGetAllCandidatesQuery} from "../../../redux/slices/userSlice.js";
-import Loader from "../../Loader/Loader.jsx";
-import {Link} from "react-router-dom";
+import Loader from "../../shared/Loader/Loader.jsx";
+import {Link, useSearchParams} from "react-router-dom";
 import {CANDIDATES} from "../../../util/routes.js";
+import Pagination from "../../shared/Pagination/Pagination.jsx";
 
 const UserCard = ({candidate}) => {
     return (
@@ -54,23 +55,29 @@ const UserCard = ({candidate}) => {
 };
 
 const CandidateList = () => {
-    const {data: candidates, isLoading} = useGetAllCandidatesQuery();
+    const [searchParams] = useSearchParams();
+    const page = Number(searchParams.get('page')) > 0 ? Number(searchParams.get('page')) : 1;
+    const {data, isLoading} = useGetAllCandidatesQuery({page});
 
     return (
         isLoading ? <Loader/> :
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: '10px',
-                justifyItems: 'center'
-            }}>
+            <div className="w-full pl-20 pr-20">
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gap: '10px',
+                    justifyItems: 'center'
+                }}>
 
-                {candidates.map((candidate, index) => (
-                    <Link to={`${CANDIDATES}/${candidate.id}`} key={index}>
-                        <UserCard candidate={candidate}/>
-                    </Link>
-                ))}
+                    {data.results.map((candidate, index) => (
+                        <Link to={`${CANDIDATES}/${candidate.id}`} key={index}>
+                            <UserCard candidate={candidate}/>
+                        </Link>
+                    ))}
+                </div>
+                <Pagination count={data.count}/>
             </div>
+
     );
 };
 

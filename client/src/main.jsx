@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 import {BrowserRouter} from "react-router-dom";
-import Header from "./components/Header/Header.jsx";
-import Footer from "./components/Footer/Footer.jsx";
+import Header from "./components/shared/Header/Header.jsx";
+import Footer from "./components/shared/Footer/Footer.jsx";
 import {Provider} from "react-redux";
 import {store} from "./redux/store.js";
 import {ToastContainer} from 'react-toastify';
