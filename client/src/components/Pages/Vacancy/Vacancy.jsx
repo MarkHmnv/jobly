@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {useApplyForVacancyMutation, useGetVacancyQuery} from "../../../redux/slices/vacancySlice.js";
 import {Link, useParams} from "react-router-dom";
-import Loader from "../../Loader/Loader.jsx";
+import Loader from "../../shared/Loader/Loader.jsx";
 import {isCandidate} from "../../../util/jwt.js";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";

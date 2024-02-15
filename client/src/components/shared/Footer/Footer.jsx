@@ -1,5 +1,5 @@
 import {Link} from "react-router-dom";
-import {HOME} from "../../util/routes.js";
+import {HOME} from "../../../util/routes.js";
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();

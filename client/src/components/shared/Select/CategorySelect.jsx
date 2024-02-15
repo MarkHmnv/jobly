@@ -1,4 +1,4 @@
-import {useGetCategoriesQuery} from "../../redux/slices/sharedSlice.js";
+import {useGetCategoriesQuery} from "../../../redux/slices/sharedSlice.js";
 import Loader from "../Loader/Loader.jsx";
 
 const CategorySelect = ({value, setValue}) => {
@@ -12,7 +12,7 @@ const CategorySelect = ({value, setValue}) => {
                 </label>
                 <div className="mt-2">
                     <select
-                        value={value}
+                        value={value ?? ''}
                         onChange={e => setValue(e.target.value)}
                         id="country"
                         autoComplete="country-name"

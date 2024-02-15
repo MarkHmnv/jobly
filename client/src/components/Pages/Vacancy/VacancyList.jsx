@@ -1,17 +1,20 @@
 import {useGetAllVacanciesQuery} from "../../../redux/slices/vacancySlice.js";
-import Loader from "../../Loader/Loader.jsx";
-import {Link} from "react-router-dom";
+import Loader from "../../shared/Loader/Loader.jsx";
+import {Link, useSearchParams} from "react-router-dom";
 import {VACANCIES} from "../../../util/routes.js";
 import Card from "./Card.jsx";
 import {useEffect, useState} from "react";
 import _debounce from 'lodash/debounce';
-import CategorySelect from "../../Select/CategorySelect.jsx";
+import CategorySelect from "../../shared/Select/CategorySelect.jsx";
+import Pagination from "../../shared/Pagination/Pagination.jsx";
 
 const VacancyList = () => {
     const [skills, setSkills] = useState(null);
     const [category, setCategory] = useState(null);
     const [salary, setSalary] = useState(null);
-    const {data: vacancies, isLoading} = useGetAllVacanciesQuery({skills, category, salary});
+    const [searchParams] = useSearchParams();
+    const page = Number(searchParams.get('page')) > 0 ? Number(searchParams.get('page')) : 1;
+    const {data, isLoading} = useGetAllVacanciesQuery({skills, category, salary, page});
 
     const debouncedSetSkills = _debounce((value) => setSkills(value), 600);
     const debouncedSetSalary = _debounce((value) => setSalary(value), 600);
@@ -30,7 +33,7 @@ const VacancyList = () => {
         isLoading ? <Loader/> :
             <div className="flex justify-between w-full pl-20 pr-20">
                 <div className="w-2/3 space-y-6">
-                    {vacancies.map((vacancy, index) => (
+                    {data.results.map((vacancy, index) => (
                         <Link to={`${VACANCIES}/${vacancy.id}`} key={index}>
                             <Card
                                 title={vacancy.title}
@@ -44,6 +47,7 @@ const VacancyList = () => {
                             />
                         </Link>
                     ))}
+                    <Pagination count={data.count}/>
                 </div>
                 <div className="w-1/3 ml-10">
                     <div className="border rounded-lg shadow-sm bg-white p-4 md:p-6">

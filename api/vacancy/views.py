@@ -9,6 +9,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from core.pagination import Pagination
 from core.permissions import IsRecruiter, IsRecruiterAndOwner, IsCandidate, IsCandidateAndOwner
 from core.utils import check_profile_complete
 from vacancy.models import Vacancy, VacancyApplication
@@ -20,7 +21,7 @@ from vacancy.serializers import (
 from vacancy.similarity import calculate_quality
 
 
-QUALITY_THRESHOLD = 0.5
+QUALITY_THRESHOLD = 0.1
 CACHE_KEY_PREFIX = 'recommendation_list'
 
 
@@ -28,6 +29,7 @@ class VacancyView(viewsets.ModelViewSet):
     queryset = Vacancy.objects.all()
     lookup_field = 'id'
     authentication_classes = [JWTAuthentication]
+    pagination_class = Pagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
 
     filterset_fields = {
@@ -73,6 +75,7 @@ class VacancyApplicationList(generics.ListAPIView):
     serializer_class = VacancyApplicationSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+    pagination_class = Pagination
 
     def get_queryset(self):
         vacancy_id = self.kwargs.get('vacancy_id', None)
@@ -105,6 +108,7 @@ class RecommendationList(generics.ListAPIView):
     serializer_class = VacancyGeneralSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+    pagination_class = Pagination
 
     # recommendations will be updated every 15 minutes
     @method_decorator(cache_page(60 * 15, key_prefix=CACHE_KEY_PREFIX))

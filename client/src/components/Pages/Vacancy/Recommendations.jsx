@@ -1,17 +1,20 @@
 import {useGetRecommendationsQuery} from "../../../redux/slices/vacancySlice.js";
-import Loader from "../../Loader/Loader.jsx";
-import {Link} from "react-router-dom";
+import Loader from "../../shared/Loader/Loader.jsx";
+import {Link, useSearchParams} from "react-router-dom";
 import {VACANCIES} from "../../../util/routes.js";
 import Card from "./Card.jsx";
+import Pagination from "../../shared/Pagination/Pagination.jsx";
 
 const Recommendations = () => {
-    const {data: vacancies, isLoading} = useGetRecommendationsQuery();
+    const [searchParams] = useSearchParams();
+    const page = Number(searchParams.get('page')) > 0 ? Number(searchParams.get('page')) : 1;
+    const {data, isLoading} = useGetRecommendationsQuery({page});
 
     return (
         isLoading ? <Loader/> :
             <div className="w-full pl-20 pr-20">
                 <div className="space-y-6">
-                    {vacancies.map((vacancy, index) => (
+                    {data.results.map((vacancy, index) => (
                         <Link to={`${VACANCIES}/${vacancy.id}`} key={index}>
                             <Card
                                 title={vacancy.title}
@@ -26,6 +29,7 @@ const Recommendations = () => {
                         </Link>
                     ))}
                 </div>
+                <Pagination count={data.count}/>
             </div>
     );
 };

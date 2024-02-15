@@ -1,15 +1,18 @@
-import {Link, useParams} from 'react-router-dom';
+import {Link, useParams, useSearchParams} from 'react-router-dom';
 import {useGetVacancyApplicationsQuery} from '../../../redux/slices/vacancySlice.js';
-import Loader from '../../Loader/Loader.jsx';
+import Loader from '../../shared/Loader/Loader.jsx';
 import {CANDIDATES} from "../../../util/routes.js";
 import {Menu, Transition} from "@headlessui/react";
 import {ChevronDownIcon} from "@heroicons/react/20/solid/index.js";
 import {Fragment, useState} from "react";
 import {classNames} from "../../../util/util.js";
 import Card from "./Card.jsx";
+import Pagination from "../../shared/Pagination/Pagination.jsx";
 
 const VacancyApplications = () => {
     const {id} = useParams();
+    const [searchParams] = useSearchParams();
+    const page = Number(searchParams.get('page')) > 0 ? Number(searchParams.get('page')) : 1;
     const [sortOptions] = useState([
         {key: 'quality', label: 'Quality'},
         {key: 'created_at', label: 'Date'},
@@ -17,10 +20,11 @@ const VacancyApplications = () => {
     const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
     const [reverse, setReverse] = useState(true);
 
-    const {data: applications, isLoading} = useGetVacancyApplicationsQuery({
+    const {data, isLoading} = useGetVacancyApplicationsQuery({
         id,
         sort_by: selectedSort.key,
         reverse,
+        page
     });
 
     const sortBy = (option, reverse) => {
@@ -30,10 +34,10 @@ const VacancyApplications = () => {
 
     return (
         isLoading ? <Loader/> :
-            applications.length === 0 ? <p>No applications yet</p> :
+            data.results.length === 0 ? <p>No applications yet</p> :
                 <div className="flex justify-between w-full pl-20 pr-20">
                     <div className="w-2/3 space-y-6">
-                        {applications.map((application, index) => (
+                        {data.results.map((application, index) => (
                             <Link to={`${CANDIDATES}/${application.candidate.id}`} key={index}>
                                 <Card
                                     title={`${application.candidate.user.first_name} ${application.candidate.user.last_name}`}
@@ -48,6 +52,7 @@ const VacancyApplications = () => {
                                 />
                             </Link>
                         ))}
+                        <Pagination count={data.count}/>
                     </div>
                     <div className="w-1/3 pl-40">
                         <Menu as="div" className="relative inline-block text-left">

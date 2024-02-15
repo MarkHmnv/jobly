@@ -4,6 +4,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from candidate.models import Candidate
 from candidate.serializers import CandidateDetailSerializer, CandidateCreateSerializer, CandidateGeneralSerializer
+from core.pagination import Pagination
 from core.permissions import IsCandidate
 
 
@@ -34,3 +35,4 @@ class ListCandidateView(generics.ListAPIView):
     serializer_class = CandidateGeneralSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+    pagination_class = Pagination
