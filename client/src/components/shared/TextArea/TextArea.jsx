@@ -7,7 +7,7 @@ const TextArea = ({label, value, setValue}) => {
                 </label>
                 <div className="mt-2">
                 <textarea
-                    value={value}
+                    value={value ?? ''}
                     onChange={(e) => setValue(e.target.value)}
                     rows={3}
                     id={label}

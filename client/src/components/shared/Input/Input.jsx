@@ -6,7 +6,7 @@ const Input = ({label, value, setValue, type, colSpan}) => {
             </label>
             <div className="mt-2">
                 <input
-                    value={value}
+                    value={value ?? ''}
                     onChange={(e) => setValue(e.target.value)}
                     type={type}
                     min="0"

@@ -25,7 +25,7 @@ const CountrySelect = ({currentCountry, setCountry}) => {
             </label>
             <div className="mt-2">
                 <select
-                    value={currentCountry}
+                    value={currentCountry ?? ''}
                     onChange={e => setCountry(e.target.value)}
                     id="country"
                     autoComplete="country-name"
