@@ -14,14 +14,14 @@ def get_or_404(model, data, message):
 
 def update_category(instance, category_data):
     if category_data is not None:
-        category = get_or_404(Category, category_data, 'Category not found')
+        category = get_or_404(Category, category_data, f'Category {category_data["name"]} not found')
         instance.category = category
 
 
 def update_skills(instance, skills_data):
     instance.skills.clear()
     for skill_data in skills_data:
-        skill = get_or_404(Skill, skill_data, 'Skill not found')
+        skill = get_or_404(Skill, skill_data, f'Skill {skill_data["name"]} not found')
         instance.skills.add(skill)
 
 
