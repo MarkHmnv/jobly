@@ -1,4 +1,6 @@
 const Card = ({title, city, country, experience, salary, description, createdAt, quality, skills}) => {
+    const maxDescriptionLength = 90;
+
     const formatDate = (date) => {
         const options = {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric'};
         return new Date(date).toLocaleDateString('en-US', options);
@@ -14,6 +16,13 @@ const Card = ({title, city, country, experience, salary, description, createdAt,
         return <span style={{color}}>Quality: {percentage}%</span>
     };
 
+    const truncateDescription = (description) => {
+        if (description.length > maxDescriptionLength) {
+            return description.substring(0, maxDescriptionLength) + '...';
+        }
+        return description;
+    };
+
     return (
         <div className="border rounded-lg shadow-sm bg-white p-4 md:p-6 mb-4">
             <div className="flex items-center justify-between">
@@ -24,7 +33,7 @@ const Card = ({title, city, country, experience, salary, description, createdAt,
                     <div className="text-gray-700">
                         <p>{city}, {country}{' · '}{experience} years of experience</p>
                         {salary && <p className="text-green-700">${salary}</p>}
-                        <p className="text-gray-500">{description}</p>
+                        <p className="text-gray-500">{truncateDescription(description)}</p>
                     </div>
                 </div>
                 <div className="text-right">
