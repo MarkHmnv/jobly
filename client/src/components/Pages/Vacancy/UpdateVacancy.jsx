@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {useGetVacancyQuery, useUpdateVacancyMutation} from "../../../redux/slices/vacancySlice.js";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import Input from "../../shared/Input/Input.jsx";
 import CountrySelect from "../../shared/Select/CountrySelect.jsx";
 import CategorySelect from "../../shared/Select/CategorySelect.jsx";
@@ -8,6 +8,7 @@ import TextArea from "../../shared/TextArea/TextArea.jsx";
 import Loader from "../../shared/Loader/Loader.jsx";
 import {toastError} from "../../../util/toastUtil.jsx";
 import {toast} from "react-toastify";
+import {VACANCIES} from "../../../util/routes.js";
 
 const UpdateVacancy = () => {
     const [updateVacancy, {isLoading: isUpdating}] = useUpdateVacancyMutation()
@@ -89,7 +90,7 @@ const UpdateVacancy = () => {
                         </div>
 
                         <div className="border-b border-gray-900/10 pb-12">
-                            <TextArea label="About" value={description} setValue={setDescription}/>
+                            <TextArea label="About (Markdown is supported)" value={description} setValue={setDescription}/>
                         </div>
                         <div className="border-b border-gray-900/10 pb-12">
                             <TextArea label="Skills" value={skills} setValue={setSkills}/>
@@ -99,6 +100,7 @@ const UpdateVacancy = () => {
 
                 <div className="mt-6 flex items-center justify-end gap-x-6 pb-12">
                     {isUpdating && <Loader/>}
+                    <Link to={`${VACANCIES}/${id}`} className="text-sm font-semibold leading-6 text-gray-900">Cancel</Link>
                     <button
                         type="submit"
                         className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

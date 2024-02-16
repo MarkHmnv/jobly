@@ -1,13 +1,20 @@
 import {useDispatch} from "react-redux";
 import {useEffect, useState} from "react";
-import {useGetRecruiterProfileQuery, useUpdateRecruiterProfileMutation} from "../../../redux/slices/userSlice.js";
-import {updateName} from "../../../redux/slices/authSlice.js";
+import {
+    useDeleteRecruiterProfileMutation,
+    useGetRecruiterProfileQuery,
+    useUpdateRecruiterProfileMutation
+} from "../../../redux/slices/userSlice.js";
+import {removeCredentials, updateName} from "../../../redux/slices/authSlice.js";
 import Input from "../../shared/Input/Input.jsx";
 import TextArea from "../../shared/TextArea/TextArea.jsx";
 import Loader from "../../shared/Loader/Loader.jsx";
 import CountrySelect from "../../shared/Select/CountrySelect.jsx";
 import {toastError} from "../../../util/toastUtil.jsx";
 import {toast} from "react-toastify";
+import {useNavigate} from "react-router-dom";
+import ConfirmationDialog from "../../shared/ConfirmationDialog/ConfirmationDialog.jsx";
+import {HOME} from "../../../util/routes.js";
 
 const UpdateRecruiterProfile = () => {
     const dispatch = useDispatch()
@@ -20,6 +27,10 @@ const UpdateRecruiterProfile = () => {
 
     const {data: profile, isLoading} = useGetRecruiterProfileQuery();
     const [updateRecruitereProfile, {isLoading: isUpdating}] = useUpdateRecruiterProfileMutation();
+
+    const [deleteProfile] = useDeleteRecruiterProfileMutation();
+    const navigate = useNavigate();
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
     useEffect(() => {
         if (profile) {
@@ -48,6 +59,18 @@ const UpdateRecruiterProfile = () => {
             dispatch(updateName(res.user.first_name + " " + res.user.last_name))
             toast.success("Profile updated")
         } catch (error) {
+            toastError(error)
+        }
+    }
+
+    const handleDelete = async () => {
+        try {
+            await deleteProfile();
+            dispatch(removeCredentials())
+            toast.success("Profile deleted")
+            navigate(HOME)
+        } catch (error) {
+            console.log(error)
             toastError(error)
         }
     }
@@ -82,11 +105,21 @@ const UpdateRecruiterProfile = () => {
             <div className="mt-6 flex items-center justify-end gap-x-6 pb-12">
                 {isUpdating && <Loader/>}
                 <button
+                    type="button"
+                    onClick={() => setShowConfirmation(true)}
+                    className="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                >
+                    Delete Profile
+                </button>
+                <button
                     type="submit"
                     className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                     Save
                 </button>
+                <ConfirmationDialog show={showConfirmation} setShow={setShowConfirmation}
+                                    onConfirm={handleDelete}
+                                    message={"Are you sure you want to delete your profile?"}/>
             </div>
         </form>
     );
