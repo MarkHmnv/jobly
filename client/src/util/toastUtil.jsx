@@ -1,17 +1,11 @@
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 
 export const toastError = (error) => {
     let messages = [];
-    if (typeof (error.data) === 'object') {
-        for (const value of Object.values(error.data)) {
-            if (value instanceof Array) {
-                for (const message of value) {
-                    messages.push(message);
-                }
-            } else {
-                messages.push(value);
-            }
-        }
+    if (error.data && error.data.user && error.data.user.email) {
+        error.data.user.email.forEach(message => {
+            messages.push(message);
+        });
     } else {
         messages.push(error.data?.message || error.error);
     }

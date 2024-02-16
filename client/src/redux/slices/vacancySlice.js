@@ -45,6 +45,12 @@ export const vacancySlice = apiSlice.injectEndpoints({
                 body: vacancy
             })
         }),
+        deleteVacancy: builder.mutation({
+            query: (id) => ({
+                url: `${VACANCIES_URL}${id}/`,
+                method: "DELETE"
+            })
+        }),
         applyForVacancy: builder.mutation({
             query: ({coverLetter, id}) => ({
                 url: `${VACANCIES_URL}${id}/apply/`,
@@ -67,6 +73,7 @@ export const {
     useGetVacancyQuery,
     useCreateVacancyMutation,
     useUpdateVacancyMutation,
+    useDeleteVacancyMutation,
     useApplyForVacancyMutation,
     useGetVacancyApplicationsQuery,
     useGetRecommendationsQuery

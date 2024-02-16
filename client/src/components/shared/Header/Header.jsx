@@ -9,7 +9,6 @@ import {
     PROFILE,
     RECOMMENDATIONS,
     SIGNIN,
-    SIGNUP,
     VACANCIES
 } from "../../../util/routes.js";
 import {useDispatch, useSelector} from "react-redux";
@@ -42,7 +41,7 @@ const Header = () => {
             <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
                 <div className="flex lg:flex-1">
                     <Link to={HOME} className="-m-1.5 p-1.5">
-                        <span className="sr-only">Your Company</span>
+                        <span className="sr-only">Jobly</span>
                         <img
                             className="h-8 w-auto"
                             src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
@@ -141,16 +140,10 @@ const Header = () => {
                                 </Transition>
                             </Menu>
                             : (
-                                <>
-                                    <Link to={`${SIGNUP}?candidate=true`}
-                                          className="text-sm font-semibold leading-6 text-gray-900">
-                                        Sign up as Candidate
-                                    </Link>
-                                    <span>&nbsp;|&nbsp;</span>
-                                    <Link to={SIGNUP} className="text-sm font-semibold leading-6 text-gray-900">
-                                        Sign up as Recruiter
-                                    </Link>
-                                </>
+                                <Link to={SIGNIN}
+                                      className="text-sm font-semibold leading-6 text-gray-900">
+                                    Sign in
+                                </Link>
                             )
                     }
                 </div>

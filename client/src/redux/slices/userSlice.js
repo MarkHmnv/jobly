@@ -6,9 +6,6 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         getCandidateProfile: builder.query({
             query: () => `${CANDIDATES_URL}me/`
         }),
-        getRecruiterProfile: builder.query({
-            query: () => `${RECRUITERS_URL}me/`
-        }),
         updateCandidateProfile: builder.mutation({
             query: (updateRequest) => ({
                 url: `${CANDIDATES_URL}me/`,
@@ -16,11 +13,26 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                 body: updateRequest
             })
         }),
+        deleteCandidateProfile: builder.mutation({
+            query: () => ({
+                url: `${CANDIDATES_URL}me/`,
+                method: "DELETE"
+            })
+        }),
+        getRecruiterProfile: builder.query({
+            query: () => `${RECRUITERS_URL}me/`
+        }),
         updateRecruiterProfile: builder.mutation({
             query: (updateRequest) => ({
                 url: `${RECRUITERS_URL}me/`,
                 method: "PATCH",
                 body: updateRequest
+            })
+        }),
+        deleteRecruiterProfile: builder.mutation({
+            query: () => ({
+                url: `${RECRUITERS_URL}me/`,
+                method: "DELETE"
             })
         }),
         getAllCandidates: builder.query({
@@ -38,5 +50,7 @@ export const {
     useGetRecruiterProfileQuery,
     useUpdateRecruiterProfileMutation,
     useGetAllCandidatesQuery,
-    useGetCandidateByIdQuery
+    useGetCandidateByIdQuery,
+    useDeleteCandidateProfileMutation,
+    useDeleteRecruiterProfileMutation
 } = usersApiSlice;
