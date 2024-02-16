@@ -21,7 +21,7 @@ from vacancy.serializers import (
 from vacancy.similarity import calculate_quality
 
 
-QUALITY_THRESHOLD = 0.1
+QUALITY_THRESHOLD = 0.5
 CACHE_KEY_PREFIX = 'recommendation_list'
 
 
@@ -124,24 +124,24 @@ class RecommendationList(generics.ListAPIView):
         if cached_result is not None:
             return cached_result
 
-        all_vacancies = Vacancy.objects.all()
+        # Get applications made by the candidate
+        applied_vacancies = VacancyApplication.objects.filter(candidate=candidate).values_list('vacancy', flat=True)
+
+        # Filter vacancies that the candidate has not applied for
+        vacancies = Vacancy.objects.exclude(id__in=applied_vacancies)
 
         vacancies_quality = {
             vacancy: calculate_quality(vacancy, candidate)
-            for vacancy in all_vacancies
+            for vacancy in vacancies
         }
 
-        filtered_vacancies = [
+        sorted_vacancies = [
             vacancy
             for vacancy, quality in vacancies_quality.items()
             if quality >= QUALITY_THRESHOLD
         ]
 
-        sorted_vacancies = sorted(
-            filtered_vacancies,
-            key=lambda vacancy: vacancies_quality[vacancy],
-            reverse=True
-        )
+        sorted_vacancies.sort(key=lambda vacancy: vacancies_quality[vacancy], reverse=True)
 
         cache.set(self.get_cache_key(), sorted_vacancies)
 
