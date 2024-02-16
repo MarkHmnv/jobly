@@ -63,8 +63,13 @@ const SignIn = () => {
 
                 <p className="mt-10 text-center text-sm text-gray-500">
                     Not a member?{' '}
+                    <Link to={`${SIGNUP}?candidate=true`}
+                          className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                        Sign up as Candidate
+                    </Link>
+                    <span>&nbsp;|&nbsp;</span>
                     <Link to={SIGNUP} className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
-                        Create an account
+                        Sign up as Recruiter
                     </Link>
                 </p>
             </div>
