@@ -4,13 +4,11 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from core.models import User, Skill, Category
 
 
-# TODO: Change email and password separately for both candidate and recruiter
-
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name')
+        fields = ('email', 'first_name', 'last_name', 'image')
+        read_only_fields = ('image',)
 
 
 class UserDetailSerializer(UserSerializer):
@@ -19,6 +17,16 @@ class UserDetailSerializer(UserSerializer):
         fields = UserSerializer.Meta.fields + ('password',)
         extra_kwargs = {
             "password": {"write_only": True, "min_length": 6}
+        }
+
+
+class UserImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'image')
+        read_only_fields = ('id',)
+        extra_kwargs = {
+            'image': {'required': True}
         }
 
 

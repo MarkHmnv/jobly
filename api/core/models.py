@@ -1,9 +1,18 @@
+import os
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
     PermissionsMixin,
 )
+
+
+def image_upload_to(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = f'{uuid.uuid4()}.{ext}'
+    return os.path.join('uploads', 'users', filename)
 
 
 class UserManager(BaseUserManager):
@@ -37,6 +46,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=100, unique=True)
     is_candidate = models.BooleanField(default=False)
     is_recruiter = models.BooleanField(default=False)
+    image = models.ImageField(upload_to=image_upload_to, null=True)
 
     USERNAME_FIELD = 'email'
 
