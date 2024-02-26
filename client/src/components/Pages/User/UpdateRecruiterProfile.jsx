@@ -15,6 +15,7 @@ import {toast} from "react-toastify";
 import {useNavigate} from "react-router-dom";
 import ConfirmationDialog from "../../shared/ConfirmationDialog/ConfirmationDialog.jsx";
 import {HOME} from "../../../util/routes.js";
+import ImageUpload from "../../shared/ImageUpload.jsx";
 
 const UpdateRecruiterProfile = () => {
     const dispatch = useDispatch()
@@ -24,6 +25,8 @@ const UpdateRecruiterProfile = () => {
     const [country, setCountry] = useState("");
     const [city, setCity] = useState("");
     const [about, setAbout] = useState("");
+    const [image, setImage] = useState("");
+
 
     const {data: profile, isLoading} = useGetRecruiterProfileQuery();
     const [updateRecruitereProfile, {isLoading: isUpdating}] = useUpdateRecruiterProfileMutation();
@@ -40,6 +43,7 @@ const UpdateRecruiterProfile = () => {
             setCountry(profile.country);
             setCity(profile.city);
             setAbout(profile.about);
+            setImage(profile.user.image)
         }
     }, [profile, isLoading]);
 
@@ -83,9 +87,8 @@ const UpdateRecruiterProfile = () => {
                     <p className="mt-1 text-sm leading-6 text-gray-600">
                         This information will be displayed publicly so be careful what you share.
                     </p>
-
+                    <ImageUpload image={image} setImage={setImage}/>
                     <div className="border-b border-gray-900/10 pb-12">
-
                         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                             <Input label="First name" value={firstName} setValue={setFirstName} type="text"/>
                             <Input label="Last name" value={lastName} setValue={setLastName} type="text"/>
