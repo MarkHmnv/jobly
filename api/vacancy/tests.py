@@ -6,7 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from candidate.tests import create_candidate
 from core.models import Skill, Category
-from core.tests import create_category
+from core.tests import create_category, generate_api_client
 from core.utils import get_or_404
 from recruiter.tests import create_recruiter
 from vacancy.models import Vacancy, VacancyApplication
@@ -51,28 +51,22 @@ def create_skill(name='Test'):
     return Skill.objects.create(name=name)
 
 
-def authorize_another_user(client, role='recruiter'):
+def authorize_another_user(role='recruiter'):
+    email = 'test2@test.com'
+    user = None
     if role == 'recruiter':
-        another_recruiter = create_recruiter(email='test2@test.com')
-        refresh = RefreshToken.for_user(another_recruiter.user)
-        refresh['role'] = 'recruiter'
-        client.credentials(HTTP_AUTHORIZATION='Bearer ' + str(refresh.access_token))
+        user = create_recruiter(email=email).user
     elif role == 'candidate':
-        another_candidate = create_candidate(email='test2@test.com')
-        refresh = RefreshToken.for_user(another_candidate.user)
-        refresh['role'] = 'candidate'
-        client.credentials(HTTP_AUTHORIZATION='Bearer ' + str(refresh.access_token))
-    return client
+        user = create_candidate(email=email).user
+
+    return generate_api_client(user, role=role)
 
 
 class VacancyRecruiterTest(TestCase):
     def setUp(self):
         create_category(name='Test Category')
         self.recruiter = create_recruiter()
-        self.client = APIClient()
-        refresh = RefreshToken.for_user(self.recruiter.user)
-        refresh['role'] = 'recruiter'
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + str(refresh.access_token))
+        self.client = generate_api_client(self.recruiter.user, role='recruiter')
         self.payload = {
             'id': 1,
             'title': 'Test',
@@ -125,7 +119,7 @@ class VacancyRecruiterTest(TestCase):
 
     def test_update_vacancy_forbidden(self):
         create_vacancy(self.recruiter, **self.payload)
-        self.client = authorize_another_user(self.client)
+        self.client = authorize_another_user(role='recruiter')
 
         res = self.client.patch(get_vacancy_by_id(1), self.payload, format='json')
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
@@ -142,7 +136,7 @@ class VacancyRecruiterTest(TestCase):
 
     def test_destroy_vacancy_forbidden(self):
         create_vacancy(self.recruiter, **self.payload)
-        self.client = authorize_another_user(self.client)
+        self.client = authorize_another_user(role='recruiter')
 
         res = self.client.delete(get_vacancy_by_id(1))
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
@@ -202,8 +196,9 @@ class VacancyCandidateTest(TestCase):
     def test_list_vacancies_success(self):
         res = self.client.get(VACANCIES_URL)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 1)
-        self.assertNotIn('category', res.data[0])
+        res = res.data['results']
+        self.assertEqual(len(res), 1)
+        self.assertNotIn('category', res[0])
 
     def test_apply_for_vacancy_success(self):
         res = self.client.post(apply_for_vacancy_by_id(1), self.application_payload)
@@ -236,7 +231,7 @@ class VacancyCandidateTest(TestCase):
     def update_vacancy_application_forbidden(self):
         application = create_vacancy_application(self.vacancy, self.candidate)
 
-        self.client = authorize_another_user(self.client, role='candidate')
+        self.client = authorize_another_user(role='candidate')
 
         res = self.client.patch(
             get_vacancy_application_by_id(self.vacancy.id, application.id),
@@ -253,7 +248,7 @@ class VacancyCandidateTest(TestCase):
     def destroy_vacancy_application_forbidden(self):
         application = create_vacancy_application(self.vacancy, self.candidate)
 
-        self.client = authorize_another_user(self.client, role='candidate')
+        self.client = authorize_another_user(role='candidate')
 
         res = self.client.delete(get_vacancy_application_by_id(self.vacancy.id, application.id))
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
