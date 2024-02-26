@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import Loader from "../../shared/Loader/Loader.jsx";
 import {useParams} from "react-router-dom";
 import {useGetCandidateByIdQuery} from "../../../redux/slices/userSlice.js";
+import {UserCircleIcon} from "@heroicons/react/24/solid/index.js";
 
 const CandidateProfile = () => {
     const {id} = useParams()
@@ -21,6 +22,7 @@ const CandidateProfile = () => {
     const [linkedin, setLinkedin] = useState("");
     const [github, setGithub] = useState("");
     const [about, setAbout] = useState("");
+    const [image, setImage] = useState("");
 
     useEffect(() => {
         if (profile) {
@@ -38,6 +40,7 @@ const CandidateProfile = () => {
             setLinkedin(profile.linkedin);
             setGithub(profile.github);
             setAbout(profile.about);
+            setImage(profile.user.image);
         }
     }, [profile, isLoading]);
 
@@ -46,17 +49,8 @@ const CandidateProfile = () => {
             <div className="container mx-auto px-4 lg:px-6">
                 <div className="flex flex-col md:flex-row gap-6 my-6 p-4">
                     <div className="md:w-1/3 flex justify-center">
-                        <img
-                            alt="Candidate"
-                            className="rounded-full h-48 w-48 border-4 border-blue-500"
-                            height="192"
-                            src="/placeholder.svg"
-                            style={{
-                                aspectRatio: "192/192",
-                                objectFit: "cover",
-                            }}
-                            width="192"
-                        />
+                        {image ? <img src={image} className="h-48 w-48 rounded-full " alt="image"/> :
+                            <UserCircleIcon className="w-48 h-48 rounded-full text-gray-300"/>}
                     </div>
                     <div className="md:w-2/3">
                         <div className="mb-4">

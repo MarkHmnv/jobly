@@ -3,13 +3,14 @@ import Loader from "../../shared/Loader/Loader.jsx";
 import {Link, useSearchParams} from "react-router-dom";
 import {CANDIDATES} from "../../../util/routes.js";
 import Pagination from "../../shared/Pagination/Pagination.jsx";
+import {UserCircleIcon} from "@heroicons/react/24/solid/index.js";
 
 const UserCard = ({candidate}) => {
     return (
         <div className="w-80 h-120 bg-white shadow-lg rounded-lg overflow-hidden my-4">
-            <img className="w-full h-56 object-cover object-center"
-                 src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80"
-                 alt="avatar"/>
+            {candidate.user.image ?
+                <img src={candidate.user.image} className="w-full h-56 object-cover object-center" alt="image"/> :
+                <UserCircleIcon className="w-full h-56 object-cover object-center text-gray-300" aria-hidden="true"/>}
             <div className="py-4 px-6">
                 <h1 className="text-2xl font-semibold text-gray-800">
                     {candidate.user.first_name + " " + candidate.user.last_name}
