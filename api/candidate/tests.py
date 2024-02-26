@@ -3,9 +3,9 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from candidate.models import Candidate
+from core.tests import generate_api_client
 
 User = get_user_model()
 
@@ -110,16 +110,13 @@ class PrivateCandidateTests(TestCase):
     def setUp(self):
         self.candidate = create_candidate()
         self.user = self.candidate.user
-        self.client = APIClient()
-
-        refresh = RefreshToken.for_user(self.user)
-        refresh['role'] = 'candidate'
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + str(refresh.access_token))
+        self.client = generate_api_client(self.user, role='candidate')
         self.response = {
             'user': {
                 'first_name': self.user.first_name,
                 'last_name': self.user.last_name,
                 'email': self.user.email,
+                'image': self.user.image,
             },
             'position': self.candidate.position,
             'category': None,
