@@ -17,8 +17,16 @@ Jobly is a job board platform with features for both candidates and recruiters.
 
 1. Make sure Docker and Docker Compose are installed on your machine.
 2. Clone this repository and navigate into the root directory of this project.
-3. Execute the following command to build and run the application:
+3. Rename the file `.env.sample` to `.env` and adjust the variables as needed based on your environment.
+4. Execute the following command to build and run the application:
 
+For running on localhost:
 ```bash
 docker-compose up
 ````
+
+For running in a production setup:
+
+```bash
+docker-compose -f docker-compose-deploy.yml up
+```
