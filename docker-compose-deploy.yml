@@ -5,6 +5,8 @@ services:
     build:
       context: .
     restart: always
+    ports:
+      - "9000:9000"
     volumes:
       - static-data:/vol/web
     environment:
