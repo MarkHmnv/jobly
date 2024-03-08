@@ -27,7 +27,6 @@ jobs:
     name: Build and Push Docker Image
     needs: test
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'workflow_dispatch'}}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
