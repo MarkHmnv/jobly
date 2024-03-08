@@ -21,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-bk(udzzw5u6rb9zybuzh)1kg%%8m7g+^8(cdkj2_o-w1+9pdbr'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'changeme')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get('DEBUG', False))
 
-CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '*').split(',')
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://*, https://*').split(',')
 
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '*').split(',')
 
@@ -165,7 +165,7 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
 
-    'SIGNING_KEY': os.getenv('SECRET_KEY'),
+    'SIGNING_KEY': os.getenv('JWT_SECRET_KEY', 'changeme'),
 
     'TOKEN_OBTAIN_SERIALIZER': 'core.serializers.TokenWithRoleSerializer',
 }
