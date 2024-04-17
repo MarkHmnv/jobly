@@ -41,7 +41,7 @@ const ImageUpload = ({image, setImage}) => {
 
     return (
         <div className="col-span-full mt-10">
-            <label htmlFor="photo" className="block text-sm font-medium leading-6 text-gray-900">
+            <label className="block text-sm font-medium leading-6 text-gray-900">
                 Photo
             </label>
             <div className="mt-2 flex items-center gap-x-3">
