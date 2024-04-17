@@ -16,6 +16,9 @@ class Candidate(models.Model):
     linkedin = models.CharField(max_length=100, null=True)
     github = models.CharField(max_length=100, null=True)
 
+    class Meta:
+        ordering = ['-id']
+
     def __str__(self):
         return self.user.email
 
