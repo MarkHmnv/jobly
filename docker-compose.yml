@@ -21,6 +21,7 @@ services:
       - DB_PASS=changeme
       - SECRET_KEY=secret
       - DEBUG=1
+      - REDIS_URL=redis://username:password@127.0.0.1:6379
 
   db:
     image: postgres:16.1-alpine
