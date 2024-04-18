@@ -11,7 +11,7 @@ import {toastError} from "../../../util/toastUtil.jsx";
 import {toast} from "react-toastify";
 
 const CreateVacancy = () => {
-    const [createVacancy, isLoading] = useCreateVacancyMutation()
+    const [createVacancy, {isLoading}] = useCreateVacancyMutation()
     const navigate = useNavigate()
 
     const [title, setTitle] = useState("");
