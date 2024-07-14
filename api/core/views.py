@@ -5,7 +5,12 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from core.models import Category, Skill
-from core.serializers import TokenWithRoleSerializer, CategorySerializer, SkillSerializer, UserImageSerializer
+from core.serializers import (
+    TokenWithRoleSerializer,
+    CategorySerializer,
+    SkillSerializer,
+    UserImageSerializer,
+)
 
 
 class TokenWithRoleView(TokenObtainPairView):

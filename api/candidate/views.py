@@ -3,7 +3,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from candidate.models import Candidate
-from candidate.serializers import CandidateDetailSerializer, CandidateCreateSerializer, CandidateGeneralSerializer
+from candidate.serializers import (
+    CandidateDetailSerializer,
+    CandidateCreateSerializer,
+    CandidateGeneralSerializer,
+)
 from core.pagination import Pagination
 from core.permissions import IsCandidate
 

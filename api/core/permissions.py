@@ -29,11 +29,15 @@ class IsRecruiter(BasePermission):
 
 class IsRecruiterAndOwner(IsRecruiter):
     def has_object_permission(self, request, view, obj):
-        return (super().has_permission(request, view)
-                and obj.recruiter == request.user.recruiter)
+        return (
+            super().has_permission(request, view)
+            and obj.recruiter == request.user.recruiter
+        )
 
 
 class IsCandidateAndOwner(IsCandidate):
     def has_object_permission(self, request, view, obj):
-        return (super().has_permission(request, view)
-                and obj.candidate == request.user.candidate)
+        return (
+            super().has_permission(request, view)
+            and obj.candidate == request.user.candidate
+        )

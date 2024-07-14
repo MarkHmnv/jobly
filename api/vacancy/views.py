@@ -10,7 +10,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from core.pagination import Pagination
-from core.permissions import IsRecruiter, IsRecruiterAndOwner, IsCandidate, IsCandidateAndOwner
+from core.permissions import (
+    IsRecruiter,
+    IsRecruiterAndOwner,
+    IsCandidate,
+    IsCandidateAndOwner,
+)
 from core.utils import check_profile_complete
 from vacancy.models import Vacancy, VacancyApplication
 from vacancy.serializers import (
@@ -30,7 +35,11 @@ class VacancyView(viewsets.ModelViewSet):
     lookup_field = 'id'
     authentication_classes = [JWTAuthentication]
     pagination_class = Pagination
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
 
     filterset_fields = {
         'skills__name': ['exact', 'in'],
@@ -84,8 +93,13 @@ class VacancyApplicationList(generics.ListAPIView):
 
         vacancy = get_object_or_404(Vacancy, id=vacancy_id)
 
-        if not hasattr(self.request.user, 'recruiter') or vacancy.recruiter != self.request.user.recruiter:
-            raise PermissionDenied('You do not have permission to view these applications.')
+        if (
+            not hasattr(self.request.user, 'recruiter')
+            or vacancy.recruiter != self.request.user.recruiter
+        ):
+            raise PermissionDenied(
+                'You do not have permission to view these applications.'
+            )
 
         sort_by = self.request.query_params.get('sort_by', 'quality')
         reverse = self.request.query_params.get('reverse', 'true').lower() == 'true'
@@ -93,11 +107,15 @@ class VacancyApplicationList(generics.ListAPIView):
         if sort_by == 'quality':
             sorted_applications = sorted(
                 vacancy.applications.all(),
-                key=lambda application: calculate_quality(vacancy, application.candidate),
-                reverse=reverse
+                key=lambda application: calculate_quality(
+                    vacancy, application.candidate
+                ),
+                reverse=reverse,
             )
         elif sort_by == 'created_at':
-            sorted_applications = vacancy.applications.order_by('-created_at' if reverse else 'created_at')
+            sorted_applications = vacancy.applications.order_by(
+                '-created_at' if reverse else 'created_at'
+            )
         else:
             raise serializers.ValidationError({'error': 'Invalid sort_by parameter.'})
 
@@ -118,21 +136,24 @@ class RecommendationList(generics.ListAPIView):
     def get_queryset(self):
         candidate = self.request.user.candidate
 
-        check_profile_complete(candidate, 'You must complete your profile to get recommended vacancies.')
+        check_profile_complete(
+            candidate, 'You must complete your profile to get recommended vacancies.'
+        )
 
         cached_result = cache.get(self.get_cache_key())
         if cached_result is not None:
             return cached_result
 
         # Get applications made by the candidate
-        applied_vacancies = VacancyApplication.objects.filter(candidate=candidate).values_list('vacancy', flat=True)
+        applied_vacancies = VacancyApplication.objects.filter(
+            candidate=candidate
+        ).values_list('vacancy', flat=True)
 
         # Filter vacancies that the candidate has not applied for
         vacancies = Vacancy.objects.exclude(id__in=applied_vacancies)
 
         vacancies_quality = {
-            vacancy: calculate_quality(vacancy, candidate)
-            for vacancy in vacancies
+            vacancy: calculate_quality(vacancy, candidate) for vacancy in vacancies
         }
 
         sorted_vacancies = [
@@ -141,7 +162,9 @@ class RecommendationList(generics.ListAPIView):
             if quality >= QUALITY_THRESHOLD
         ]
 
-        sorted_vacancies.sort(key=lambda vacancy: vacancies_quality[vacancy], reverse=True)
+        sorted_vacancies.sort(
+            key=lambda vacancy: vacancies_quality[vacancy], reverse=True
+        )
 
         cache.set(self.get_cache_key(), sorted_vacancies)
 

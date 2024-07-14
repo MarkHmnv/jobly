@@ -19,15 +19,8 @@ def get_recruiter_by_id(id):
 
 
 def create_recruiter(email='test@example.com', password='password', **params):
-    user = User.objects.create_user(
-        email=email,
-        password=password,
-        is_recruiter=True
-    )
-    return Recruiter.objects.create(
-        user=user,
-        **params
-    )
+    user = User.objects.create_user(email=email, password=password, is_recruiter=True)
+    return Recruiter.objects.create(user=user, **params)
 
 
 class PublicRecruiterTests(TestCase):

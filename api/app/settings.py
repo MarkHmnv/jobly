@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+
 import os
 from pathlib import Path
 from datetime import timedelta
@@ -27,7 +28,9 @@ DEBUG = bool(os.environ.get('DEBUG', False))
 
 CORS_ALLOW_ALL_ORIGINS = DEBUG
 
-CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://*, https://*').split(',')
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://*, https://*').split(
+    ','
+)
 
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '*').split(',')
 
@@ -40,16 +43,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
-
     'drf_spectacular',
     'rest_framework_simplejwt',
     'django_filters',
-
     'corsheaders',
-
     'core',
     'candidate',
     'recruiter',
@@ -66,7 +65,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
 ]
@@ -164,9 +162,7 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=60),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
-
     'SIGNING_KEY': os.getenv('JWT_SECRET_KEY', 'changeme'),
-
     'TOKEN_OBTAIN_SERIALIZER': 'core.serializers.TokenWithRoleSerializer',
 }
 

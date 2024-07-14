@@ -5,7 +5,6 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('vacancy', '0002_alter_vacancy_recruiter_vacancyapplication_and_more'),
     ]
@@ -18,7 +17,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='vacancy',
             name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
     ]

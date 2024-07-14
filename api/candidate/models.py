@@ -3,7 +3,9 @@ from django.db import models
 
 
 class Candidate(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
+    )
     position = models.CharField(max_length=100, null=True)
     category = models.ForeignKey('core.Category', on_delete=models.SET_NULL, null=True)
     skills = models.ManyToManyField('core.Skill', blank=True)
