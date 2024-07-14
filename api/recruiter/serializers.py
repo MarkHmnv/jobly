@@ -28,9 +28,7 @@ class RecruiterSerializer(serializers.ModelSerializer):
         password = user_data.pop('password')
         with transaction.atomic():
             user = User.objects.create_user(
-                password=password,
-                is_recruiter=True,
-                **user_data
+                password=password, is_recruiter=True, **user_data
             )
             recruiter = Recruiter.objects.create(user=user, **validated_data)
 

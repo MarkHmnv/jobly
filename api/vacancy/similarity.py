@@ -31,13 +31,17 @@ def calculate_quality(vacancy, candidate):
 
     skill_match = cosine_similarity(v1, v2)
     if vacancy.salary is not None:
-        salary_match = 1 - abs(vacancy.salary - candidate.salary) / max(vacancy.salary, candidate.salary)
+        salary_match = 1 - abs(vacancy.salary - candidate.salary) / max(
+            vacancy.salary, candidate.salary
+        )
     else:
         salary_match = 1
     category_match = 1 if vacancy.category == candidate.category else 0
     experience_match = min(candidate.experience / vacancy.experience, 1)
 
-    return (SKILL_WEIGHT * skill_match +
-            EXPERIENCE_WEIGHT * experience_match +
-            CATEGORY_WEIGHT * category_match +
-            SALARY_WEIGHT * salary_match)
+    return (
+        SKILL_WEIGHT * skill_match
+        + EXPERIENCE_WEIGHT * experience_match
+        + CATEGORY_WEIGHT * category_match
+        + SALARY_WEIGHT * salary_match
+    )

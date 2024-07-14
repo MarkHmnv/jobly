@@ -2,8 +2,7 @@ version: "3.9"
 
 services:
   api:
-    build:
-      context: .
+    image: 17021702/jobly-api
     restart: always
     ports:
       - "9000:9000"
@@ -21,8 +20,7 @@ services:
       - REDIS_URL=${REDIS_URL}
 
   proxy:
-    build:
-      context: ./proxy
+    image: 17021702/jobly-proxy
     restart: always
     depends_on:
       - api

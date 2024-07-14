@@ -12,12 +12,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserDetailSerializer(UserSerializer):
-
     class Meta(UserSerializer.Meta):
         fields = UserSerializer.Meta.fields + ('password',)
-        extra_kwargs = {
-            "password": {"write_only": True, "min_length": 6}
-        }
+        extra_kwargs = {'password': {'write_only': True, 'min_length': 6}}
 
 
 class UserImageSerializer(serializers.ModelSerializer):
@@ -25,9 +22,7 @@ class UserImageSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'image')
         read_only_fields = ('id',)
-        extra_kwargs = {
-            'image': {'required': True}
-        }
+        extra_kwargs = {'image': {'required': True}}
 
 
 class TokenWithRoleSerializer(TokenObtainPairSerializer):

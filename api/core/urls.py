@@ -7,5 +7,5 @@ app_name = 'shared'
 urlpatterns = [
     path('categories/', CategoryListView.as_view(), name='category-list'),
     path('skills/', SkillListView.as_view(), name='skill-list'),
-    path('upload-image/', UserImageView.as_view(), name='upload-image')
+    path('upload-image/', UserImageView.as_view(), name='upload-image'),
 ]

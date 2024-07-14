@@ -17,18 +17,17 @@ def create_category(name='Test', **params):
     return Category.objects.create(name=name, **params)
 
 
-def create_candidate(email='test@example.com', password='password',
-                     salary=100, experience=1, skill=None, category=None):
-    user = User.objects.create_user(
-        email=email,
-        password=password,
-        is_candidate=True
-    )
+def create_candidate(
+    email='test@example.com',
+    password='password',
+    salary=100,
+    experience=1,
+    skill=None,
+    category=None,
+):
+    user = User.objects.create_user(email=email, password=password, is_candidate=True)
     candidate = Candidate.objects.create(
-        user=user,
-        salary=salary,
-        experience=experience,
-        category=category
+        user=user, salary=salary, experience=experience, category=category
     )
     if skill:
         candidate.skills.set([skill])
@@ -36,15 +35,8 @@ def create_candidate(email='test@example.com', password='password',
 
 
 def create_recruiter(email='test@example.com', password='password', **params):
-    user = User.objects.create_user(
-        email=email,
-        password=password,
-        is_recruiter=True
-    )
-    return Recruiter.objects.create(
-        user=user,
-        **params
-    )
+    user = User.objects.create_user(email=email, password=password, is_recruiter=True)
+    return Recruiter.objects.create(user=user, **params)
 
 
 def generate_api_client(user, role='candidate'):
@@ -60,6 +52,7 @@ UPLOAD_IMAGE_URL = reverse('shared:upload-image')
 
 class ImageUploadTestCase(TestCase):
     """Tests for image upload, by default uses candidate user"""
+
     role = 'candidate'
 
     @classmethod
@@ -103,4 +96,5 @@ class ImageUploadTestCase(TestCase):
 
 class RecruiterImageUploadTests(ImageUploadTestCase):
     """Same tests for image upload, but for recruiter user"""
+
     role = 'recruiter'

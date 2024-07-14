@@ -16,15 +16,21 @@ def image_upload_to(instance, filename):
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, password=None, is_candidate=False,
-                    is_recruiter=False, **extra_fields):
+    def create_user(
+        self,
+        email,
+        password=None,
+        is_candidate=False,
+        is_recruiter=False,
+        **extra_fields,
+    ):
         if not email:
-            raise ValueError("Email should not be blank")
+            raise ValueError('Email should not be blank')
         user = self.model(
             email=self.normalize_email(email),
             is_candidate=is_candidate,
             is_recruiter=is_recruiter,
-            **extra_fields
+            **extra_fields,
         )
         user.set_password(password)
         user.save(using=self._db)

@@ -14,7 +14,9 @@ def get_or_404(model, data, message):
 
 def update_category(instance, category_data):
     if category_data is not None:
-        category = get_or_404(Category, category_data, f'Category {category_data["name"]} not found')
+        category = get_or_404(
+            Category, category_data, f'Category {category_data["name"]} not found'
+        )
         instance.category = category
 
 
@@ -26,6 +28,10 @@ def update_skills(instance, skills_data):
 
 
 def check_profile_complete(candidate, message='You must complete your profile.'):
-    if (candidate.category is None or candidate.salary is None
-            or candidate.experience is None or candidate.skills.count() == 0):
+    if (
+        candidate.category is None
+        or candidate.salary is None
+        or candidate.experience is None
+        or candidate.skills.count() == 0
+    ):
         raise serializers.ValidationError({'error': message})

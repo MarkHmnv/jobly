@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('core', '0003_fill_category_skills'),
         ('candidate', '0004_alter_candidate_about_alter_candidate_city_and_more'),
@@ -15,7 +14,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='candidate',
             name='category',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='core.category'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to='core.category',
+            ),
         ),
         migrations.AddField(
             model_name='candidate',

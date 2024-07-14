@@ -4,7 +4,12 @@ from rest_framework.generics import get_object_or_404
 from candidate.serializers import CandidateGeneralSerializer
 from core.models import Skill, Category
 from core.serializers import CategorySerializer, SkillSerializer
-from core.utils import get_or_404, update_category, update_skills, check_profile_complete
+from core.utils import (
+    get_or_404,
+    update_category,
+    update_skills,
+    check_profile_complete,
+)
 from vacancy.models import Vacancy, VacancyApplication
 from rest_framework import serializers
 
@@ -16,8 +21,17 @@ class VacancyGeneralSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Vacancy
-        fields = ('id', 'title', 'description', 'experience',
-                  'salary', 'country', 'city', 'created_at', 'skills')
+        fields = (
+            'id',
+            'title',
+            'description',
+            'experience',
+            'salary',
+            'country',
+            'city',
+            'created_at',
+            'skills',
+        )
         read_only_fields = fields
 
 
@@ -40,9 +54,7 @@ class VacancyDetailSerializer(VacancyGeneralSerializer):
 
         category = get_or_404(Category, category_data, 'Category not found')
         vacancy = Vacancy.objects.create(
-            category=category,
-            recruiter=recruiter,
-            **validated_data
+            category=category, recruiter=recruiter, **validated_data
         )
 
         for skill_data in skills_data:
@@ -83,13 +95,15 @@ class VacancyApplicationSerializer(serializers.ModelSerializer):
         vacancy_id = self.context['view'].kwargs.get('vacancy_id')
         vacancy = get_object_or_404(Vacancy, id=vacancy_id)
 
-        check_profile_complete(candidate, 'You must complete your profile to apply for a vacancy.')
+        check_profile_complete(
+            candidate, 'You must complete your profile to apply for a vacancy.'
+        )
 
         try:
             return VacancyApplication.objects.create(
-                candidate=candidate,
-                vacancy=vacancy,
-                **validated_data
+                candidate=candidate, vacancy=vacancy, **validated_data
             )
         except IntegrityError:
-            raise serializers.ValidationError({'error': 'You have already applied to this vacancy.'})
+            raise serializers.ValidationError(
+                {'error': 'You have already applied to this vacancy.'}
+            )

@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('recruiter', '0002_alter_recruiter_about_alter_recruiter_city_and_more'),
         ('candidate', '0005_candidate_category_candidate_github_and_more'),
@@ -16,16 +15,42 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='vacancy',
             name='recruiter',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='recruiter.recruiter'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to='recruiter.recruiter',
+            ),
         ),
         migrations.CreateModel(
             name='VacancyApplication',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
                 ('cover_letter', models.TextField(max_length=5000)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('candidate', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='candidate.candidate')),
-                ('vacancy', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='vacancy.vacancy')),
+                (
+                    'candidate',
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to='candidate.candidate',
+                    ),
+                ),
+                (
+                    'vacancy',
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to='vacancy.vacancy',
+                    ),
+                ),
             ],
             options={
                 'ordering': ['-created_at'],
@@ -33,6 +58,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name='vacancyapplication',
-            constraint=models.UniqueConstraint(fields=('candidate', 'vacancy'), name='unique_vacancy_application'),
+            constraint=models.UniqueConstraint(
+                fields=('candidate', 'vacancy'), name='unique_vacancy_application'
+            ),
         ),
     ]

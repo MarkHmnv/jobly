@@ -4,22 +4,38 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
             name='Candidate',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
                 ('first_name', models.CharField(max_length=30)),
                 ('last_name', models.CharField(max_length=30)),
                 ('email', models.EmailField(max_length=100, unique=True)),
                 ('password', models.CharField(max_length=255)),
-                ('role', models.CharField(choices=[('CANDIDATE', 'CANDIDATE'), ('RECRUITER', 'RECRUITER'), ('ADMIN', 'ADMIN')], max_length=10)),
+                (
+                    'role',
+                    models.CharField(
+                        choices=[
+                            ('CANDIDATE', 'CANDIDATE'),
+                            ('RECRUITER', 'RECRUITER'),
+                            ('ADMIN', 'ADMIN'),
+                        ],
+                        max_length=10,
+                    ),
+                ),
                 ('position', models.CharField(max_length=100)),
                 ('experience', models.IntegerField()),
                 ('country', models.CharField(max_length=100)),

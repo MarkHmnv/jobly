@@ -31,7 +31,9 @@ def create_vacancy(recruiter, salary=100, experience=1, **params):
         params['category'] = Category.objects.get(name=params['category']['name'])
 
     skills = params.pop('skills', [])
-    vacancy = Vacancy.objects.create(recruiter=recruiter, salary=salary, experience=experience, **params)
+    vacancy = Vacancy.objects.create(
+        recruiter=recruiter, salary=salary, experience=experience, **params
+    )
     for skill_data in skills:
         skill = get_or_404(Skill, skill_data, 'Skill not found')
         vacancy.skills.add(skill)
@@ -41,9 +43,7 @@ def create_vacancy(recruiter, salary=100, experience=1, **params):
 
 def create_vacancy_application(vacancy, candidate):
     return VacancyApplication.objects.create(
-        vacancy=vacancy,
-        candidate=candidate,
-        cover_letter='Test cover letter'
+        vacancy=vacancy, candidate=candidate, cover_letter='Test cover letter'
     )
 
 
@@ -168,11 +168,15 @@ class VacancyCandidateTest(TestCase):
         }
         recruiter = create_recruiter()
         self.vacancy = create_vacancy(recruiter=recruiter, **self.payload)
-        self.candidate = create_candidate(email='test1@test.com', skill=skill, category=category)
+        self.candidate = create_candidate(
+            email='test1@test.com', skill=skill, category=category
+        )
         self.client = APIClient()
         refresh = RefreshToken.for_user(self.candidate.user)
         refresh['role'] = 'candidate'
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + str(refresh.access_token))
+        self.client.credentials(
+            HTTP_AUTHORIZATION='Bearer ' + str(refresh.access_token)
+        )
 
     def test_create_vacancy_forbidden(self):
         res = self.client.post(VACANCIES_URL, self.payload, format='json')
@@ -203,12 +207,16 @@ class VacancyCandidateTest(TestCase):
     def test_apply_for_vacancy_success(self):
         res = self.client.post(apply_for_vacancy_by_id(1), self.application_payload)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(res.data['cover_letter'], self.application_payload['cover_letter'])
+        self.assertEqual(
+            res.data['cover_letter'], self.application_payload['cover_letter']
+        )
         self.assertEqual(VacancyApplication.objects.count(), 1)
 
     def test_retrieve_vacancy_application_success(self):
         application = create_vacancy_application(self.vacancy, self.candidate)
-        res = self.client.get(get_vacancy_application_by_id(self.vacancy.id, application.id))
+        res = self.client.get(
+            get_vacancy_application_by_id(self.vacancy.id, application.id)
+        )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         for k, v in self.application_payload.items():
             self.assertEqual(res.data[k], v)
@@ -222,7 +230,7 @@ class VacancyCandidateTest(TestCase):
         self.application_payload['cover_letter'] = 'Updated cover letter'
         res = self.client.patch(
             get_vacancy_application_by_id(self.vacancy.id, application.id),
-            self.application_payload
+            self.application_payload,
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         for k, v in self.application_payload.items():
@@ -235,13 +243,15 @@ class VacancyCandidateTest(TestCase):
 
         res = self.client.patch(
             get_vacancy_application_by_id(self.vacancy.id, application.id),
-            self.application_payload
+            self.application_payload,
         )
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_destroy_vacancy_application_success(self):
         application = create_vacancy_application(self.vacancy, self.candidate)
-        res = self.client.delete(get_vacancy_application_by_id(self.vacancy.id, application.id))
+        res = self.client.delete(
+            get_vacancy_application_by_id(self.vacancy.id, application.id)
+        )
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(VacancyApplication.objects.count(), 0)
 
@@ -250,6 +260,8 @@ class VacancyCandidateTest(TestCase):
 
         self.client = authorize_another_user(role='candidate')
 
-        res = self.client.delete(get_vacancy_application_by_id(self.vacancy.id, application.id))
+        res = self.client.delete(
+            get_vacancy_application_by_id(self.vacancy.id, application.id)
+        )
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(VacancyApplication.objects.count(), 1)

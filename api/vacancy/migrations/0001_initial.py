@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -18,16 +17,41 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Vacancy',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
                 ('title', models.CharField(max_length=255)),
                 ('description', models.TextField(max_length=5000)),
                 ('experience', models.IntegerField()),
                 ('salary', models.IntegerField(null=True)),
                 ('country', models.CharField(max_length=100)),
                 ('city', models.CharField(max_length=100)),
-                ('candidates', models.ManyToManyField(blank=True, to='candidate.candidate')),
-                ('category', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='core.category')),
-                ('recruiter', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='recruiter.recruiter')),
+                (
+                    'candidates',
+                    models.ManyToManyField(blank=True, to='candidate.candidate'),
+                ),
+                (
+                    'category',
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to='core.category',
+                    ),
+                ),
+                (
+                    'recruiter',
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to='recruiter.recruiter',
+                    ),
+                ),
                 ('skills', models.ManyToManyField(to='core.skill')),
             ],
         ),

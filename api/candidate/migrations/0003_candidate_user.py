@@ -6,16 +6,22 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('candidate', '0002_remove_candidate_email_remove_candidate_first_name_and_more'),
+        (
+            'candidate',
+            '0002_remove_candidate_email_remove_candidate_first_name_and_more',
+        ),
     ]
 
     operations = [
         migrations.AddField(
             model_name='candidate',
             name='user',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            field=models.OneToOneField(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

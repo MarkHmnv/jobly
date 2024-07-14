@@ -8,7 +8,7 @@ from core.serializers import (
     UserSerializer,
     UserDetailSerializer,
     SkillSerializer,
-    CategorySerializer
+    CategorySerializer,
 )
 
 import re
@@ -16,7 +16,9 @@ import re
 from core.utils import update_category, update_skills
 
 phone_pattern = r'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$'
-linkedin_pattern = r'https?://([a-z]+\.)?linkedin\.com/(in|pub)/[a-zA-Z0-9-]+(/[0-9A-Z]+)?'
+linkedin_pattern = (
+    r'https?://([a-z]+\.)?linkedin\.com/(in|pub)/[a-zA-Z0-9-]+(/[0-9A-Z]+)?'
+)
 github_pattern = r'https?://github\.com/[a-zA-Z0-9-]+/?'
 
 
@@ -42,9 +44,7 @@ class CandidateCreateSerializer(serializers.ModelSerializer):
         password = user_data.pop('password')
         with transaction.atomic():
             user = User.objects.create_user(
-                password=password,
-                is_candidate=True,
-                **user_data
+                password=password, is_candidate=True, **user_data
             )
             candidate = Candidate.objects.create(user=user, **validated_data)
 
@@ -61,9 +61,20 @@ class CandidateDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Candidate
-        fields = ('user', 'position', 'category', 'skills',
-                  'experience', 'salary', 'country', 'city',
-                  'about', 'phone', 'linkedin', 'github')
+        fields = (
+            'user',
+            'position',
+            'category',
+            'skills',
+            'experience',
+            'salary',
+            'country',
+            'city',
+            'about',
+            'phone',
+            'linkedin',
+            'github',
+        )
 
     def validate_phone(self, value):
         if value is not None and not re.match(phone_pattern, value):
@@ -108,6 +119,14 @@ class CandidateGeneralSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Candidate
-        fields = ('id', 'user', 'position', 'experience',
-                  'salary', 'country', 'city', 'skills')
+        fields = (
+            'id',
+            'user',
+            'position',
+            'experience',
+            'salary',
+            'country',
+            'city',
+            'skills',
+        )
         read_only_fields = fields
